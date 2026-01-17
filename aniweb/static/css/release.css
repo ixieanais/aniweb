@@ -1,0 +1,160 @@
+.release-wrapper {
+    padding: 20px;
+    font-family: var(--primary-font);
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.release-card {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
+
+.release-body {
+    display: flex;
+    gap: 30px;
+}
+
+.release-image {
+    width: 300px;
+}
+
+.release-info {
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.favorite-button {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 48px;
+    height: 48px;
+    font-family: var(--primary-font);
+    background-color: var(--default-button);
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.favorite-button:hover {
+    background-color: var(--default-button-hover);
+}
+
+.favorite-button > div.svg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div.svg > svg {
+    width: 32px;
+    height: 32px;
+}
+
+.favorite-button > div.hidden {
+    display: none;
+}
+
+.release-info span.name {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.release-info .info-item {
+    display: flex;
+    gap: 6px;
+}
+
+.info-item > div.genres {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+div.genres .circle {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: rgb(230, 230, 230);
+    margin-top: 2px;
+}
+
+.episodes-wrapper {
+    margin: 0 auto;
+}
+
+.episodes {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto;
+    gap: 14px;
+}
+
+.episodes a {
+    text-decoration: none;
+    color: white;
+}
+
+.episodes button {
+    background-color: rgb(43, 43, 43);
+}
+
+.watched {
+    background-color: rgb(57, 57, 57) !important;
+}
+
+.episodes button:hover {
+    background-color: rgb(75, 75, 75) !important;
+}
+
+@media (max-width: 450px) {
+    .release-image {
+        width: 170px;
+        height: max-content;
+    }
+
+    .release-wrapper {
+        font-size: 12px !important;
+    }
+
+    span.name {
+        font-size: 16px !important;
+    }
+
+    .release-description {
+        font-size: 14px;
+    }
+
+    .favorite-button {
+        width: 32px;
+        height: 32px;
+    }
+
+    div.svg > svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .episodes {
+        gap: 6px;
+        grid-template-columns: auto auto auto;
+    }
+
+    .release-wrapper {
+        gap: 30px;
+    }
+
+    .release-body {
+        gap: 15px;
+    }
+}

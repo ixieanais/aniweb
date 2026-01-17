@@ -1,0 +1,150 @@
+.releases-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.releases-span {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    font-family: var(--primary-font);
+    margin: 10px 0;
+    margin-top: 14px;
+}
+
+.cards-wrapper {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: auto auto auto auto auto;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.card-1-wrapper {
+    grid-template-columns: auto !important;
+}
+
+.card-2-wrapper {
+    grid-template-columns: auto auto !important;
+}
+
+.card-3-wrapper {
+    grid-template-columns: auto auto auto !important;
+}
+
+.card-4-wrapper {
+    grid-template-columns: auto auto auto auto !important;
+}
+
+.card-item {
+    color: white;
+    position: relative;
+    display: flex;
+    border-radius: 14px;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.card-item img {
+    width: 260px;
+    transition: 0.1s;
+    object-fit: cover;
+}
+
+.card-item:hover img {
+    filter: brightness(0.1) blur(2px);
+}
+
+.card-item .info-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    padding: 20px;
+    color: white;
+}
+
+.card-item:hover .info-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.info-wrapper {
+    position: relative;
+}
+
+.info-content .name {
+    font-size: 16pt;
+}
+
+.info-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: var(--primary-font);
+    gap: 40px;
+}
+
+.small-items {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+.circle {
+    width: 4px;
+    height: 4px;
+    background-color: rgb(190, 190, 190);
+    border-radius: 50%;
+}
+
+@media (max-width: 1200px) {
+    .cards-wrapper {
+        grid-template-columns: auto auto auto auto;
+    }
+}
+
+@media (max-width: 1000px) {
+    .cards-wrapper {
+        grid-template-columns: auto auto auto;
+    }
+}
+
+@media (max-width: 700px) {
+    .cards-wrapper {
+        grid-template-columns: auto auto;
+    }
+}
+
+@media (max-width: 450px) {
+    .cards-wrapper {
+        grid-template-columns: auto auto;
+    }
+
+    .card-item img {
+        width: 170px;
+    }
+
+    .info-content {
+        font-size: 12px !important;
+    }
+
+    .info-content .name {
+        font-size: 14px !important;
+    }
+
+    .releases-span {
+        font-size: 18px !important;
+    }
+}

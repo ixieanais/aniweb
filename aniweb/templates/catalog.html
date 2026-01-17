@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for("static", path="/favicon.ico") }}" rel="icon">
+    <link href="{{ url_for("static", path="/css/styles.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", path="/css/header.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", path="/css/index.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", path="/css/catalog.css") }}" rel="stylesheet">
+    <title>Aniweb</title>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="main">
+        <div class="wrapper">
+            <div class="general-wrappper">
+                <div class="catalog-wrapper">
+                    {% if releases %}
+                        <div class="catalog-container">
+                            <div class="cards-wrapper">
+                                {% for release in releases %}
+                                    <a href="/release/{{ release.alias }}" class="card-item">
+                                        <div class="img-container">
+                                            <img src="https://anilibria.tv{{ release.poster.src }}" class="img-round">
+                                            <div class="info-overlay img-round">
+                                                <div class="info-wrapper">
+                                                    <div class="info-content">
+                                                        <span class="name">{{ release.name.main }}</span>
+                                                        <div class="small-items">
+                                                            <span class="type text-lightgray">{{ release.type.value }}</span>
+                                                            <div class="circle"></div>
+                                                            <span class="year text-lightgray">{{ release.year }}</span>
+                                                            <div class="circle"></div>
+                                                            <span class="age_rating text-lightgray">{{ release.age_rating.label }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            <div class="buttons-wrapper">
+                                {% if meta.current_page - 1 != 0 %}
+                                    <button onclick="goToPage({{ meta.current_page - 1 }})" class="default-button">{{ meta.current_page - 1 }} страница</button>
+                                {% else %}
+                                    <div class="transparent-button"></div>
+                                {% endif %}
+                                <button class="default-button">{{ meta.current_page }} страница</button>
+                                {% if meta.current_page != meta.total_pages %}
+                                    <button onclick="goToPage({{ meta.current_page + 1 }})" class="default-button">{{ meta.current_page + 1 }} страница</button>
+                                {% else %}
+                                    <div class="transparent-button"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="not-found" id="not-found">
+                            <span>Ничего не найдено</span>
+                            <button class="default-button" id="not-found-button">Вернуться</button>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="filter-wrapper">
+                    <div class="filter-container">
+                        <div class="filter-block">
+                            <span class="filter-title">Жанры</span>
+                            <div class="genres-grid">
+                                {% for genre in genres|sort(attribute="total_releases", reverse=True) %}
+                                    <label class="genre-item {% if loop.index > 6 %} hidden-genre {% endif %}">
+                                        <input type="checkbox" name="genres" value="{{ genre.id }}">
+                                        <span>{{ genre.name }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                            <span class="toggle-genres text-halfgray" id="toggle-genres">все жанры</span>
+                        </div>
+                        <div class="line"></div>
+                        <div class="filter-block">
+                            <span class="filter-title">Сортировка</span>
+                            <div class="select-wrapper">
+                                <select name="sort" id="sort" class="select">
+                                    <option selected value="choose">--</option>
+                                    <option value="FRESH_AT_DESC">Обновлённые недавно</option>
+                                    <option value="FRESH_AT_ASC">Обновлённые давно</option>
+                                    <option value="RATING_DESC">Самый высокий рейтинг</option>
+                                    <option value="RATING_ASC">Самый низкий рейтинг</option>
+                                    <option value="YEAR_DESC">Самые новые</option>
+                                    <option value="YEAR_ASC">Самые старые</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="filter-block">
+                            <span class="filter-title">Статус выхода</span>
+                            <div class="select-wrapper">
+                                <select name="status" id="status" class="select">
+                                    <option selected value="choose">--</option>
+                                    <option value="IS_ONGOING">Онгоинг</option>
+                                    <option value="IS_NOT_ONGOING">Неонгоинг</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <button class="default-button filter-apply" id="applyFilters">Применить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for("static", path="/js/header.js") }}"></script>
+    <script src="{{ url_for("static", path="/js/catalog.js") }}"></script>
+</body>
+</html>

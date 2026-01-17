@@ -1,0 +1,161 @@
+import uvicorn
+
+from datetime import datetime
+from database import DataBase
+from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from contextlib import asynccontextmanager
+
+import config
+import schemas
+from services import *
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global database
+    database = DataBase(config.DATABASE_PATH)
+    await database.create_tables()
+
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+app.mount("/static", StaticFiles(directory=config.STATIC_PATH), name="static")
+templates = Jinja2Templates(directory=config.TEMPLATES_PATH)
+
+
+@app.get("/", response_class=HTMLResponse)
+async def home_page(request: Request):
+    service = HomeService(database)
+    await service.update_releases_if_needed()
+    context = await service.get_context()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context=context
+    )
+
+@app.get("/catalog", response_class=HTMLResponse)
+async def catalog_page(
+    request: Request,
+    page=1,
+    genres="",
+    sort="RATING_DESC",
+    status=""
+):
+    # raise HTTPException(status_code=404, detail="page not found")
+    service = CatalogService(database)
+    await service.fetch_and_store_releases(page, genres, sort, status)
+    context = await service.get_context()
+    if context["meta"]["current_page"] == context["meta"]["total_pages"] + 1:
+        raise HTTPException(status_code=404, detail="page not found")
+
+    return templates.TemplateResponse(
+        request=request,
+        name="catalog.html",
+        context=context
+    )
+
+@app.get("/profile", response_class=HTMLResponse)
+async def profile_page(request: Request):
+    context = {}
+
+    return templates.TemplateResponse(
+        request=request,
+        name="not_found.html",
+        context=context
+    )
+
+@app.get("/favorites", response_class=HTMLResponse)
+async def favorites_page(request: Request):
+    service = FavoritesService(database)
+    context = await service.get_context()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="favorites.html",
+        context=context
+    )
+
+@app.get("/release/{alias}", response_class=HTMLResponse)
+async def release_page(request: Request, alias: str):
+    service = ReleaseService(database)
+    await service.update_release_if_needed(alias)
+    context = await service.get_context()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="release.html",
+        context=context
+    )
+
+@app.get("/video/{id}", response_class=HTMLResponse)
+async def video_page(reqeust: Request, id: str):
+    service = VideoService(database)
+    await service.get_info(id)
+    context = await service.get_context()
+
+    return templates.TemplateResponse(
+        request=reqeust,
+        name="video.html",
+        context=context
+    )
+
+@app.post("/watched")
+async def add_watched(data: schemas.WatchedRequest):
+    try:
+        await database.insert_watched(
+            data.episode_id,
+            data.release_id,
+            datetime.now().timestamp()
+        )
+        return {"status": "complete"}
+    except Exception as e:
+        print(e)
+        return {"status": "incomplete"}
+
+@app.post("/favorite")
+async def add_favorites(data: schemas.FavoriteRequest):
+    try:
+        await database.insert_favorite(data.alias, datetime.now().timestamp())
+        return {"status": "complete", "details": "starred"}
+    except Exception as e:
+        print(e)
+        return {"status": "incomplete"}
+
+@app.delete("/favorite")
+async def delete_favorite(data: schemas.FavoriteRequest):
+    try:
+        await database.delete_favorite(data.alias)
+        return {"status": "complete", "details": "unstarred"}
+    except Exception as e:
+        print(e)
+        return {"status": "incomplete"}
+
+@app.post("/is_favorite")
+async def get_is_favorite(data: schemas.FavoriteRequest):
+    try:
+        return await database.is_favorite(data.alias)
+    except Exception as e:
+        print(e)
+        return False
+
+@app.get("/search")
+async def search_releases_and_store(query: str):
+    service = SearchService(database)
+    result = await service.fetch_and_store_releases(query)
+
+    print(len(result))
+    return result
+
+@app.exception_handler(404)
+async def not_found_page(request: Request, exc: HTTPException):
+    return templates.TemplateResponse(request=request, name="not_found.html")
+
+
+if __name__ == "__main__":
+    uvicorn.run("app:app", host="0.0.0.0", port=4242, reload=True)

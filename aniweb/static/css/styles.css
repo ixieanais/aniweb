@@ -1,0 +1,140 @@
+:root {
+    --header-primary: #000000;
+    --bg-primary: #121214;
+    --main-primary: #1e1e20;
+    --primary-font: Geologica;
+    --default-button: #323232;
+    --default-button-hover: #464646;
+    --lightgray: #dedede;
+    --halfgray: #a6a6a6;
+    --gray: #7b7b7b;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: Geologica;
+    src: url(../Geologica.ttf);
+}
+
+body, html {
+    background-color: var(--bg-primary);
+    width: 100%;
+    height: 100%;
+}
+
+.main {
+    display: flex;
+    padding: 30px;
+    justify-content: center;
+}
+
+.main-wrapper {
+    background-color: var(--main-primary);
+    color: white;
+    width: 100%;
+    max-width: 1480px;
+    border-radius: 14px;
+    padding: 10px;
+    min-height: 300px;
+}
+
+.default-button {
+    background-color: var(--default-button);
+    color: white;
+    font-family: var(--primary-font);
+    font-size: 24px;
+    border-radius: 8px;
+    border: none;
+    transition: 0.1s background;
+    min-width: 180px;
+    height: 80px;
+    cursor: pointer;
+    padding: 0 20px;
+}
+
+.transparent-button {
+    width: 180px;
+    height: 80px;
+}
+
+.default-button:hover {
+    background-color: var(--default-button-hover);
+}
+
+.text-gray {
+    color: var(--gray);
+}
+
+.text-halfgray {
+    color: var(--halfgray);
+}
+
+.text-lightgray {
+    color: var(--lightgray);
+}
+
+.img-round {
+    border-radius: 14px;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: #323232;
+}
+
+.button-round {
+    border-radius: 50%;
+}
+
+.not-found {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.not-found span {
+    font-family: var(--primary-font);
+    font-size: 24px;
+    color: white;
+}
+
+.not-found span.text-halfgray {
+    font-size: 18px;
+    color: var(--halfgray);
+}
+
+.not-found button {
+    margin-top: 15px;
+    height: 60px;
+}
+
+@media (max-width: 1400px) {
+    .main {
+        padding: 0;
+    }
+}
+
+@media (max-width: 450px) {
+    .default-button {
+        min-width: 105px;
+        height: 50px;
+        font-size: 14px;
+        padding: 0 10px;
+    }
+
+    .transparent-button {
+        width: 105px;
+        height: 50px;
+    }
+}

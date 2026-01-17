@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for("static", path="/favicon.ico") }}" rel="icon">
+    <link href="{{ url_for("static", path="/css/styles.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", path="/css/header.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", path="/css/index.css") }}" rel="stylesheet">
+    <title>Aniweb - 404</title>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="main">
+        <div class="main-wrapper">
+            <div class="not-found" id="not-found">
+                <span>404</span>
+                <span class="text-halfgray">Страница не найдена</span>
+                <a href="/">
+                    <button class="default-button" id="not-found-button">Главная</button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for("static", path="/js/header.js") }}"></script>
+</body>
+</html>
