@@ -45,7 +45,7 @@ Aniweb is a personal streaming website for watching anime with Russian voice act
 
 # Installation
 
-Requirements: Python 3.121+
+Requirements: Python 3.11+
 
 ```bash
 git clone https://github.com/ixieanais/aniweb.git
