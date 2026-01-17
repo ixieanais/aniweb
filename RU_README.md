@@ -45,7 +45,7 @@ Aniweb - персональный стриминговый сайт для пр�
 
 # Установка
 
-Требования: Python 3.12+
+Требования: Python 3.11+
 
 ```bash
 git clone https://github.com/ixieanais/aniweb.git
