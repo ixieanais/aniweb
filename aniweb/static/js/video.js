@@ -33,7 +33,8 @@ document.getElementById("video-preview").addEventListener("click", async () => {
         options: [1080, 720, 480],
         forced: true,
         onChange: updateQuality
-        }
+        },
+        keyboard: { focused: false, global: true }
     });
 
     var hls;
