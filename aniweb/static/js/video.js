@@ -6,7 +6,7 @@ async function updateWathcedState(episode_id, release_id) {
         },
         body: JSON.stringify({episode_id: episode_id, release_id: release_id})
     });
-    console.info(await response.json())
+    console.info(await response.json());
 }
 
 document.getElementById("video-preview").addEventListener("click", async () => {
@@ -18,11 +18,10 @@ document.getElementById("video-preview").addEventListener("click", async () => {
     let endOpening = openingData["end"];
 
     const endingData = JSON.parse(video.dataset.ending);
-    let startEnding = endingData["start"]
-    const endEnding = endingData["end"]
+    let startEnding = endingData["start"];
+    const endEnding = endingData["end"];
 
-
-    let watched = false
+    let watched = false;
 
     videoPreview.style.display = "none";
     video.style.display = "block";
@@ -78,9 +77,8 @@ document.getElementById("video-preview").addEventListener("click", async () => {
     nextEpisodeContainer.classList.add("plyr__custom-right-button");
 
     const nextEpidoseA = document.createElement("a");
-    nextEpidoseA.href = `/video/${video.dataset.nextEpisodeId}`
-    console.log(video.dataset.nextEpisodeId)
-    nextEpisodeContainer.appendChild(nextEpidoseA)
+    nextEpidoseA.href = `/video/${video.dataset.nextEpisodeId}`;
+    nextEpisodeContainer.appendChild(nextEpidoseA);
 
     const nextEpisodeButton = document.createElement("button");
     nextEpisodeButton.textContent = "Следующий эпизод";
@@ -90,8 +88,7 @@ document.getElementById("video-preview").addEventListener("click", async () => {
     player.elements.container.appendChild(nextEpisodeContainer);
 
     video.addEventListener("loadedmetadata", async () => {
-        if (startEnding === null) startEnding = video.duration - 120
-        console.log(startEnding)
+        if (startEnding === null) startEnding = video.duration - 120;
 
         video.addEventListener("timeupdate", async () => {
             if (video.currentTime >= startOpening && video.currentTime <= endOpening && startOpening != null && endOpening != null) {
@@ -101,14 +98,14 @@ document.getElementById("video-preview").addEventListener("click", async () => {
             }
 
             if (video.currentTime >= startEnding && video.currentTime <= endEnding && video.dataset.nextEpisodeId != "") {
-                nextEpisodeButton.style.display = "block"
+                nextEpisodeButton.style.display = "block";
             } else {
                 nextEpisodeButton.style.display = "none";
             }
 
             if (video.currentTime >= startEnding - 20 && watched === false) {
-                await updateWathcedState(video.dataset.id, video.dataset.releaseId)
-                watched = true
+                await updateWathcedState(video.dataset.id, video.dataset.releaseId);
+                watched = true;
             }
         });
     });
@@ -117,4 +114,4 @@ document.getElementById("video-preview").addEventListener("click", async () => {
         player.currentTime = endOpening + 1;
         skipButton.style.display = "none";
     });
-})
+});
