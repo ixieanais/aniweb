@@ -27,14 +27,15 @@ document.getElementById("video-preview").addEventListener("click", async () => {
     video.style.display = "block";
 
     const player = new Plyr(video, {
-        settings: ['quality'],
+        settings: ['quality', 'speed'],
         quality: {
         default: 720,
         options: [1080, 720, 480],
         forced: true,
         onChange: updateQuality
         },
-        keyboard: { focused: false, global: true }
+        keyboard: { focused: false, global: true },
+        disableContextMenu: false,
     });
 
     var hls;
