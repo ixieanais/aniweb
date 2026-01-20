@@ -78,12 +78,12 @@
                     <div class="episodes-wrapper" style="margin-right: auto; margin-left: 0;">
                 {% endif %}
                     <div class="episodes">
-                        {% set watched_ids = watched_data | map(attribute="episode_id") | list %}
+                        {% set viewed_ids = viewed_data | map(attribute="episode_id") | list %}
 
                         {% for item in episodes_data %}
-                            {% if item.id in watched_ids %}
+                            {% if item.id in viewed_ids %}
                                 <a href="/video/{{ item.id }}">
-                                    <button class="default-button watched">{{ item.ordinal }} эпизод</button>
+                                    <button class="default-button viewed">{{ item.ordinal }} эпизод</button>
                                 </a>
                             {% else %}
                                 <a href="/video/{{ item.id }}">

@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class WatchedRequest(BaseModel):
+class ViewedRequest(BaseModel):
     episode_id: str
     release_id: str
 

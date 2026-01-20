@@ -1,5 +1,5 @@
-async function updateWathcedState(episode_id, release_id) {
-    const response = await fetch("/watched", {
+async function updateViewedState(episode_id, release_id) {
+    const response = await fetch("/viewed", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -21,7 +21,7 @@ document.getElementById("video-preview").addEventListener("click", async () => {
     let startEnding = endingData["start"];
     const endEnding = endingData["end"];
 
-    let watched = false;
+    let viewed = false;
 
     videoPreview.style.display = "none";
     video.style.display = "block";
@@ -105,9 +105,9 @@ document.getElementById("video-preview").addEventListener("click", async () => {
                 nextEpisodeButton.style.display = "none";
             }
 
-            if (video.currentTime >= startEnding - 20 && watched === false) {
-                await updateWathcedState(video.dataset.id, video.dataset.releaseId);
-                watched = true;
+            if (video.currentTime >= startEnding - 20 && viewed === false) {
+                await updateViewedState(video.dataset.id, video.dataset.releaseId);
+                viewed = true;
             }
         });
     });

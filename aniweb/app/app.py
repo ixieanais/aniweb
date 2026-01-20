@@ -105,10 +105,10 @@ async def video_page(reqeust: Request, id: str):
         context=context
     )
 
-@app.post("/watched")
-async def add_watched(data: schemas.WatchedRequest):
+@app.post("/viewed")
+async def add_viewed(data: schemas.ViewedRequest):
     try:
-        await database.insert_watched(
+        await database.insert_viewed(
             data.episode_id,
             data.release_id,
             datetime.now().timestamp()

@@ -76,7 +76,16 @@ class DataBase:
             )
         """)
         await self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS watched (
+            CREATE TABLE IF NOT EXISTS stars (
+                release_id VARCHAR(36),
+                quanity INTEGER,
+                added_at INTEGER,
+                FOREIGN KEY(release_id) REFERENCES releases(id),
+                UNIQUE(release_id)
+            )
+        """)
+        await self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS viewed (
                 episode_id VARCHAR(36),
                 release_id VARCHAR(36),
                 added_at INTEGER,
@@ -234,9 +243,9 @@ class DataBase:
         return row[0] if row else None
 
     @conn
-    async def get_watched_episodes(self, release_id: str):
+    async def get_viewed_episodes(self, release_id: str):
         self.cursor.row_factory = aiosqlite.Row
-        cursor = await self.cursor.execute("SELECT episode_id FROM watched WHERE release_id = ?", (release_id,))
+        cursor = await self.cursor.execute("SELECT episode_id FROM viewed WHERE release_id = ?", (release_id,))
         rows = await cursor.fetchall()
         return [dict(row) for row in rows]
 
@@ -265,8 +274,8 @@ class DataBase:
         return await cursor.fetchone()
 
     @conn
-    async def insert_watched(self, episode_id: str, release_id: str, added_at: float):
-        await self.cursor.execute("INSERT OR IGNORE INTO watched VALUES (?, ?, ?)", (episode_id, release_id, added_at))
+    async def insert_viewed(self, episode_id: str, release_id: str, added_at: float):
+        await self.cursor.execute("INSERT OR IGNORE INTO viewed VALUES (?, ?, ?)", (episode_id, release_id, added_at))
         await self.database.commit()
 
     @conn
