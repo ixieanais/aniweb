@@ -4,7 +4,11 @@
 
 # Aniweb
 
-Aniweb is a personal streaming website for watching anime with Russian voice acting.
+Aniweb is a personal web application for streaming anime with Russian voice acting.
+
+![](https://img.shields.io/github/stars/ixieanais/aniweb)
+![](https://img.shields.io/github/issues/ixieanais/aniweb)
+![](https://img.shields.io/github/forks/ixieanais/aniweb)
 
 English | [Russian](RU_README.md)
 
@@ -12,7 +16,7 @@ English | [Russian](RU_README.md)
 
 # Overview
 
-Aniweb is a personal streaming website for watching anime with Russian voice acting from [AniLiberty](https://aniliberty.top/). The AniLiberty API is used to retrieve information about anime. The interface is made with love and specifically for those who used to watch anime on jut.su. The project is intended for local or self-hosted use.
+Aniweb is a personal web application for streaming anime with Russian voice acting from [AniLiberty](https://aniliberty.top/). The AniLiberty API is used to retrieve information about anime. The interface is made with love and specifically for those who used to watch anime on jut.su. The project is intended for local or self-hosted use.
 
 # Features
 

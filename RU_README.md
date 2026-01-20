@@ -4,7 +4,11 @@
 
 # Aniweb
 
-Aniweb - персональный стриминговый сайт для просмотра аниме с русской озвучкой.
+Aniweb - персональное веб-приложение для стриминга аниме с русской озвучкой.
+
+![](https://img.shields.io/github/stars/ixieanais/aniweb)
+![](https://img.shields.io/github/issues/ixieanais/aniweb)
+![](https://img.shields.io/github/forks/ixieanais/aniweb)
 
 [English](README.md) | Russian
 
