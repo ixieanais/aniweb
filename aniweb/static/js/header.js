@@ -11,7 +11,6 @@ searchInput.addEventListener("input", async () => {
     if (value.length > 2) {
         searchTimer = setTimeout(async () => {
             addDiv(value);
-            // console.log(await searchReleases(value))
         }, 500);
     }
 
@@ -25,22 +24,23 @@ searchInput.addEventListener("input", async () => {
 async function addDiv(query) {
     if (document.querySelector(".search-result")) return;
 
+    const releases = await searchReleases(query);
+    if (releases.data.length === 0) return;
+
     const div = document.createElement("div");
     div.className = "search-result";
     div.style.width = `${searchInput.offsetWidth}px`;
 
-    const releases = await searchReleases(query)
-
     releases.data.forEach(element => {
         var linkItem = document.createElement("a");
-        linkItem.href = `/release/${element.alias}`
+        linkItem.href = `/release/${element.alias}`;
         linkItem.innerHTML = `
             <div class="search-item">
                 <img src="https://anilibria.tv/${element.poster.optimized.preview}">
                 <span>${element.name.main}</span>
             </div>
-        `
-        div.appendChild(linkItem)
+        `;
+        div.appendChild(linkItem);
     });
 
     searchWrapper.appendChild(div);
