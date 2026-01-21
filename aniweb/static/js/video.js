@@ -9,9 +9,42 @@ async function updateViewedState(episode_id, release_id) {
     console.info(await response.json());
 }
 
+async function saveViewTime(episode_id, time) {
+    const response = await fetch(`/view_time/${episode_id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({time: time})
+    });
+    console.info(await response.json());
+}
+
+async function updateViewTime(episode_id, time) {
+    const response = await fetch(`/view_time/${episode_id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({time: time})
+    });
+    console.info(await response.json());
+}
+
+async function deleteViewTime(episode_id) {
+    const response = await fetch(`/view_time/${episode_id}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    console.info(await response.json());
+}
+
 document.getElementById("video-preview").addEventListener("click", async () => {
     const videoPreview = document.getElementById("video-preview");
     const video = document.getElementById("player");
+    const episodeId = video.dataset.id;
 
     const openingData = JSON.parse(video.dataset.opening);
     let startOpening = openingData["start"];
@@ -21,7 +54,7 @@ document.getElementById("video-preview").addEventListener("click", async () => {
     let startEnding = endingData["start"];
     const endEnding = endingData["end"];
 
-    let viewed = false;
+    let viewed = JSON.parse(video.dataset.isViewed);
 
     videoPreview.style.display = "none";
     video.style.display = "block";
@@ -89,8 +122,17 @@ document.getElementById("video-preview").addEventListener("click", async () => {
     player.elements.container.appendChild(skipButtonContainer);
     player.elements.container.appendChild(nextEpisodeContainer);
 
+    let currentTime;
+    let viewTimeSaved = false;
+    let viewTimeDeleted = false;
+    if (viewed) viewTimeDeleted = true
+
     video.addEventListener("loadedmetadata", async () => {
         if (startEnding === null) startEnding = video.duration - 120;
+
+        if (video.dataset.viewTime > 0) {
+            video.currentTime = video.dataset.viewTime;
+        }
 
         video.addEventListener("timeupdate", async () => {
             if (video.currentTime >= startOpening && video.currentTime <= endOpening && startOpening != null && endOpening != null) {
@@ -105,9 +147,26 @@ document.getElementById("video-preview").addEventListener("click", async () => {
                 nextEpisodeButton.style.display = "none";
             }
 
-            if (video.currentTime >= startEnding - 20 && viewed === false) {
-                await updateViewedState(video.dataset.id, video.dataset.releaseId);
+            if (video.currentTime >= startEnding - 20 && !viewed) {
+                await updateViewedState(episodeId, video.dataset.releaseId);
                 viewed = true;
+            }
+
+            if (Math.floor(video.currentTime) % 10 == 0 && currentTime != Math.floor(video.currentTime)) {
+                if (!viewed) {
+                    currentTime = Math.floor(video.currentTime);
+                    if (!viewTimeSaved) {
+                        await saveViewTime(episodeId, currentTime);
+                        viewTimeSaved = true;
+                    } else {
+                        await updateViewTime(episodeId, currentTime);
+                    }
+                } else {
+                    if (!viewTimeDeleted) {
+                        await deleteViewTime(episodeId);
+                        viewTimeDeleted = true;
+                    }
+                }
             }
         });
     });

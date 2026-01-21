@@ -24,5 +24,7 @@ class VideoService:
             "urls": await self.database.get_episode_urls(self.id),
             "opening": self.episode_data["opening"],
             "ending": self.episode_data["ending"],
-            "release_id": self.episode_data["release_id"]
+            "release_id": self.episode_data["release_id"],
+            "view_time": await self.database.get_view_time(self.id),
+            "is_viewed": await self.database.get_is_viewed(self.id)
         }
