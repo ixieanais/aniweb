@@ -136,14 +136,6 @@ async def delete_favorite(data: schemas.FavoriteRequest):
         print(e)
         return {"status": "incomplete"}
 
-@app.post("/is_favorite")
-async def get_is_favorite(data: schemas.FavoriteRequest):
-    try:
-        return await database.is_favorite(data.alias)
-    except Exception as e:
-        print(e)
-        return False
-
 @app.get("/search")
 async def search_releases_and_store(query: str):
     service = SearchService(database)
