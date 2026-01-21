@@ -147,10 +147,7 @@ async def get_is_favorite(data: schemas.FavoriteRequest):
 @app.get("/search")
 async def search_releases_and_store(query: str):
     service = SearchService(database)
-    result = await service.fetch_and_store_releases(query)
-
-    print(len(result))
-    return result
+    return await service.fetch_and_store_releases(query)
 
 @app.post("/view_time/{eid}", tags=["View Time"])
 async def create_view_time(eid: str, data: schemas.ViewTimeRequest):
