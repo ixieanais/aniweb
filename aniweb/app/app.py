@@ -152,7 +152,7 @@ async def get_view_time(eid: str):
 
 @app.patch("/view_time/{eid}", tags=["View Time"])
 async def update_view_time(eid: str, data: schemas.ViewTimeRequest):
-    await database.update_view_time(eid, data.time)
+    await database.update_view_time(eid, data.time, datetime.now().timestamp())
     return {"status": "changed", "details": {"time": data.time}}
 
 @app.delete("/view_time/{eid}", tags=["View Time"])
