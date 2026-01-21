@@ -21,11 +21,11 @@ Aniweb is a personal web application for streaming anime with Russian voice acti
 # Features
 
 * **External APIs**: uses the [AniLiberty API](https://api.anilibria.app/api/docs/v1/) to fetch information
-* **Home page**: shows the latest updated releases
+* **Home page**: shows the latest updated releases and releases that are queued for viewing
 * **Release catalog**: you can find interesting anime using filters: you can find interesting anime using filters
 * **Top search bar**: searches anime by query
 * **Favorite releases**: you can add a selected release to your favorites. To see all your favorite releases, go to the favorites section on the top panel
-* **Player**: the player is not very convenient at the moment, but it will be improved in the future
+* **Player**: instead of the usual player in HTML, the convenient and simple Plyr.js is used.
 * **Mobile support**: currently very poor support, but it partially exists
 * **Marked watched episodes**: when you finish watching an episode, the current episode is marked as watched
 
