@@ -155,6 +155,7 @@ async def search_releases_and_store(query: str):
 @app.post("/view_time/{eid}", tags=["View Time"])
 async def create_view_time(eid: str, data: schemas.ViewTimeRequest):
     await database.save_view_time(eid, data.time, datetime.now().timestamp())
+    return {"status": "created"}
 
 @app.get("/view_time/{eid}", tags=["View Time"])
 async def get_view_time(eid: str):
@@ -163,10 +164,12 @@ async def get_view_time(eid: str):
 @app.patch("/view_time/{eid}", tags=["View Time"])
 async def update_view_time(eid: str, data: schemas.ViewTimeRequest):
     await database.update_view_time(eid, data.time)
+    return {"status": "changed", "details": {"time": data.time}}
 
 @app.delete("/view_time/{eid}", tags=["View Time"])
 async def delete_view_time(eid: str):
     await database.delete_view_time(eid)
+    return {"status": "deleted"}
 
 @app.exception_handler(404)
 async def not_found_page(request: Request, exc: HTTPException):
