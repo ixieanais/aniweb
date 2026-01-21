@@ -95,6 +95,18 @@ class DataBase:
             )
         """)
         await self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS view_time (
+                episode_id VARCHAR(36),
+                release_id VARCHAR(36),
+                time INTEGER,
+                added_at INTEGER,
+                FOREIGN KEY(episode_id) REFERENCES episodes(id),
+                FOREIGN KEY(release_id) REFERENCES releases(id),
+                UNIQUE(episode_id)
+            )
+
+""")
+        await self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS expires_in (
                 id VARCHAR(36) NOT NULL PRIMARY KEY,
                 expires_in INTEGER,
@@ -308,4 +320,30 @@ class DataBase:
     async def delete_favorite(self, alias: str):
         release_id = await self._get_release_id(alias)
         await self.cursor.execute("DELETE FROM favorites WHERE release_id = ?", (release_id,))
+        await self.database.commit()
+
+    @conn
+    async def save_view_time(self, episode_id: str, time: int, added_at: float):
+        cursor = await self.cursor.execute("SELECT release_id FROM episodes WHERE id = ?", (episode_id,))
+        row = await cursor.fetchone()
+        await self.cursor.execute(
+            "INSERT OR IGNORE INTO view_time VALUES (?, ?, ?, ?)",
+            (episode_id, row[0], time, added_at)
+        )
+        await self.database.commit()
+
+    @conn
+    async def get_view_time(self, episode_id: str) -> Optional[int]:
+        cursor = await self.cursor.execute("SELECT time FROM view_time WHERE episode_id = ?", (episode_id,))
+        row = await cursor.fetchone()
+        return row[0] if row else None
+
+    @conn
+    async def update_view_time(self, episode_id: str, time: int):
+        await self.cursor.execute("UPDATE view_time SET time = ? WHERE episode_id = ?", (time, episode_id,))
+        await self.database.commit()
+
+    @conn
+    async def delete_view_time(self, episode_id: str):
+        await self.cursor.execute("DELETE FROM view_time WHERE episode_id = ?", (episode_id,))
         await self.database.commit()

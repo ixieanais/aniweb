@@ -152,6 +152,22 @@ async def search_releases_and_store(query: str):
     print(len(result))
     return result
 
+@app.post("/view_time/{eid}", tags=["View Time"])
+async def create_view_time(eid: str, data: schemas.ViewTimeRequest):
+    await database.save_view_time(eid, data.time, datetime.now().timestamp())
+
+@app.get("/view_time/{eid}", tags=["View Time"])
+async def get_view_time(eid: str):
+    return await database.get_view_time(eid)
+
+@app.patch("/view_time/{eid}", tags=["View Time"])
+async def update_view_time(eid: str, data: schemas.ViewTimeRequest):
+    await database.update_view_time(eid, data.time)
+
+@app.delete("/view_time/{eid}", tags=["View Time"])
+async def delete_view_time(eid: str):
+    await database.delete_view_time(eid)
+
 @app.exception_handler(404)
 async def not_found_page(request: Request, exc: HTTPException):
     return templates.TemplateResponse(request=request, name="not_found.html")

@@ -8,3 +8,6 @@ class ViewedRequest(BaseModel):
 
 class FavoriteRequest(BaseModel):
     alias: str
+
+class ViewTimeRequest(BaseModel):
+    time: int
