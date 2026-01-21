@@ -125,7 +125,10 @@ document.getElementById("video-preview").addEventListener("click", async () => {
     let currentTime;
     let viewTimeSaved = false;
     let viewTimeDeleted = false;
-    if (viewed) viewTimeDeleted = true
+    if (viewed) {
+        viewTimeDeleted = true;
+        await deleteViewTime(episodeId);
+    }
 
     video.addEventListener("loadedmetadata", async () => {
         if (startEnding === null) startEnding = video.duration - 120;
@@ -165,6 +168,9 @@ document.getElementById("video-preview").addEventListener("click", async () => {
                     if (!viewTimeDeleted) {
                         await deleteViewTime(episodeId);
                         viewTimeDeleted = true;
+                        if (video.dataset.nextEpisodeId != "") {
+                            await saveViewTime(video.dataset.nextEpisodeId, 0);
+                        }
                     }
                 }
             }
