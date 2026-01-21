@@ -27,7 +27,7 @@ app.mount("/static", StaticFiles(directory=config.STATIC_PATH), name="static")
 templates = Jinja2Templates(directory=config.TEMPLATES_PATH)
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, tags=["Pages"])
 async def home_page(request: Request):
     service = HomeService(database)
     await service.update_releases_if_needed()
@@ -39,7 +39,7 @@ async def home_page(request: Request):
         context=context
     )
 
-@app.get("/catalog", response_class=HTMLResponse)
+@app.get("/catalog", response_class=HTMLResponse, tags=["Pages"])
 async def catalog_page(
     request: Request,
     page=1,
@@ -60,7 +60,7 @@ async def catalog_page(
         context=context
     )
 
-@app.get("/profile", response_class=HTMLResponse)
+@app.get("/profile", response_class=HTMLResponse, tags=["Pages"])
 async def profile_page(request: Request):
     context = {}
 
@@ -70,7 +70,7 @@ async def profile_page(request: Request):
         context=context
     )
 
-@app.get("/favorites", response_class=HTMLResponse)
+@app.get("/favorites", response_class=HTMLResponse, tags=["Pages"])
 async def favorites_page(request: Request):
     service = FavoritesService(database)
     context = await service.get_context()
@@ -81,7 +81,7 @@ async def favorites_page(request: Request):
         context=context
     )
 
-@app.get("/release/{alias}", response_class=HTMLResponse)
+@app.get("/release/{alias}", response_class=HTMLResponse, tags=["Pages"])
 async def release_page(request: Request, alias: str):
     service = ReleaseService(database)
     await service.update_release_if_needed(alias)
@@ -93,7 +93,7 @@ async def release_page(request: Request, alias: str):
         context=context
     )
 
-@app.get("/video/{id}", response_class=HTMLResponse)
+@app.get("/video/{id}", response_class=HTMLResponse, tags=["Pages"])
 async def video_page(reqeust: Request, id: str):
     service = VideoService(database)
     await service.get_info(id)
