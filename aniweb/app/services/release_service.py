@@ -64,7 +64,7 @@ class ReleaseService:
         return {
             "release_data": release_data,
             "episodes_data": await self.database.get_episodes_id(self.release_id),
-            "watched_data": await self.database.get_viewed_episodes(self.release_id),
+            "viewed_data": await self.database.get_viewed_episodes(self.release_id),
             "genres": json.loads(release_data["genres"]),
             "is_favorite": await self.database.is_favorite(self.alias)
         }
