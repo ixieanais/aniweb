@@ -291,6 +291,12 @@ class DataBase:
         await self.database.commit()
 
     @conn
+    async def get_is_viewed(self, episode_id: str) -> bool:
+        cursor = await self.cursor.execute("SELECT * FROM viewed WHERE episode_id = ?", (episode_id,))
+        row = await cursor.fetchone()
+        return True if row else False
+
+    @conn
     async def insert_favorite(self, alias: str, added_at: float):
         release_id = await self._get_release_id(alias)
         await self.cursor.execute("INSERT INTO favorites VALUES (?, ?)", (release_id, added_at))
