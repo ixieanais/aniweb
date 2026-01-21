@@ -79,5 +79,6 @@ class HomeService:
     async def get_context(self):
         return {
             "latest": await self.database.get_latest_releases(),
-            "continue": ...
+            "recently": await self.database.get_recently_releases(),
+            "recently_episodes": await self.database.get_recently_episodes()
         }

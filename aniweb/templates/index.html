@@ -40,6 +40,41 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% if recently %}
+                    <div class="recently-viewed">
+                        <span class="releases-span">Смотреть дальше</span>
+                        {% if recently|length >= 5 %}
+                            <div class="cards-wrapper">
+                        {% else %}
+                            <div class="cards-wrapper card-{{ recently|length }}-wrapper">
+                        {% endif %}
+                            {% for release in recently %}
+                                <a href="/video/{{ recently_episodes[loop.index0].id }}" class="card-item">
+                                    <div class="img-container">
+                                        <img src="{{ release.poster }}" class="img-round">
+                                        <div class="info-overlay img-round">
+                                            <div class="info-wrapper">
+                                                <div class="info-content">
+                                                    <span class="name">{{ release.name }}</span>
+                                                    <div class="small-items">
+                                                        <span class="type text-lightgray">{{ release.type }}</span>
+                                                        <div class="circle"></div>
+                                                        <span class="year text-lightgray">{{ release.year }}</span>
+                                                        <div class="circle"></div>
+                                                        <span class="age_rating text-lightgray">{{ release.age_rating }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="episode-info">
+                                                <span>{{ recently_episodes[loop.index0].ordinal }} эпизод</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

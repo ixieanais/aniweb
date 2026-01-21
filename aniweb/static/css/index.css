@@ -69,6 +69,7 @@
     display: none;
     padding: 20px;
     color: white;
+    font-family: var(--primary-font);
 }
 
 .card-item:hover .info-overlay {
@@ -91,8 +92,20 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    font-family: var(--primary-font);
     gap: 40px;
+}
+
+.episode-info {
+    position: absolute;
+    bottom: 20px;
+    background-color: #262628;
+    width: 130px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    font-size: 18px;
 }
 
 .small-items {
