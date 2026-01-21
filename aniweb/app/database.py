@@ -99,13 +99,12 @@ class DataBase:
                 episode_id VARCHAR(36),
                 release_id VARCHAR(36),
                 time INTEGER,
-                added_at INTEGER,
+                updated_at INTEGER,
                 FOREIGN KEY(episode_id) REFERENCES episodes(id),
                 FOREIGN KEY(release_id) REFERENCES releases(id),
                 UNIQUE(episode_id)
             )
-
-""")
+        """)
         await self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS expires_in (
                 id VARCHAR(36) NOT NULL PRIMARY KEY,
@@ -329,12 +328,38 @@ class DataBase:
         await self.database.commit()
 
     @conn
-    async def save_view_time(self, episode_id: str, time: int, added_at: float):
+    async def get_recently_releases(self):
+        self.cursor.row_factory = aiosqlite.Row
+        cursor = await self.cursor.execute("""
+            SELECT r.name, r.type, r.year, r.poster, r.alias, r.age_rating
+            FROM releases AS r
+            INNER JOIN view_time AS v
+            ON r.id = v.release_id
+            ORDER BY v.updated_at DESC
+        """)
+        rows = await cursor.fetchall()
+        return [dict(row) for row in rows]
+
+    @conn
+    async def get_recently_episodes(self):
+        self.cursor.row_factory = aiosqlite.Row
+        cursor = await self.cursor.execute("""
+            SELECT e.id, e.ordinal
+            FROM episodes AS e
+            INNER JOIN view_time AS v
+            ON e.id = v.episode_id
+            ORDER BY v.updated_at DESC
+        """)
+        rows = await cursor.fetchall()
+        return [dict(row) for row in rows]
+
+    @conn
+    async def save_view_time(self, episode_id: str, time: int, updated_at: float):
         cursor = await self.cursor.execute("SELECT release_id FROM episodes WHERE id = ?", (episode_id,))
         row = await cursor.fetchone()
         await self.cursor.execute(
             "INSERT OR IGNORE INTO view_time VALUES (?, ?, ?, ?)",
-            (episode_id, row[0], time, added_at)
+            (episode_id, row[0], time, updated_at)
         )
         await self.database.commit()
 
@@ -345,8 +370,8 @@ class DataBase:
         return row[0] if row else None
 
     @conn
-    async def update_view_time(self, episode_id: str, time: int):
-        await self.cursor.execute("UPDATE view_time SET time = ? WHERE episode_id = ?", (time, episode_id,))
+    async def update_view_time(self, episode_id: str, time: int, updated_at: float):
+        await self.cursor.execute("UPDATE view_time SET time = ?, updated_at = ? WHERE episode_id = ?", (time, updated_at, episode_id))
         await self.database.commit()
 
     @conn
