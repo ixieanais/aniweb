@@ -76,5 +76,5 @@ If you want to contribute to the project, I would be happy to see any interestin
 
 # License
 
-Copyright © 2025 [ixieanais](https://github.com/ixieanais).<br>
+Copyright © 2026 [ixieanais](https://github.com/ixieanais).<br>
 Aniweb is [MIT](https://choosealicense.com/licenses/mit) licensed.

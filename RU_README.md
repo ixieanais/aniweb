@@ -76,5 +76,5 @@ python main.py
 
 # Лицензия
 
-Авторские права © 2025 [ixieanais](https://github.com/ixieanais).<br>
+Авторские права © 2026 [ixieanais](https://github.com/ixieanais).<br>
 Aniweb под [MIT](https://choosealicense.com/licenses/mit) лицензированием.
