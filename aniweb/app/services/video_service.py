@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from fastapi.exceptions import HTTPException
 
 from database import DataBase
 
@@ -10,6 +11,9 @@ class VideoService:
     async def get_info(self, id: str):
         self.id = id
         self.episode_data = await self.database.get_episode_info(id)
+        if self.episode_data is None:
+            raise HTTPException(status_code=404)
+
         self.alias = await self.database.get_release_alias(self.episode_data["release_id"])
 
     async def get_context(self):

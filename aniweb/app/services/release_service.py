@@ -2,6 +2,7 @@ import json
 
 from dataclasses import dataclass
 from datetime import datetime
+from fastapi import HTTPException
 
 from database import DataBase
 from parsers import Anilibria
@@ -15,6 +16,9 @@ class ReleaseService:
     async def update_release_if_needed(self, alias: str):
         self.alias = alias
         release_info = await self.database.get_release(alias)
+        if release_info is None:
+            raise HTTPException(status_code=404)
+
         self.release_id = release_info["id"]
         expires_in = await self.database.get_expires_in(self.release_id)
         current_time = round(datetime.now().timestamp())
