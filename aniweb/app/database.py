@@ -189,11 +189,11 @@ class DataBase:
         return [dict(row) for row in rows]
 
     @conn
-    async def get_release(self, alias: str) -> dict:
+    async def get_release(self, alias: str) -> Optional[dict]:
         self.cursor.row_factory = aiosqlite.Row
         cursor = await self.cursor.execute("SELECT * FROM releases WHERE alias = ?", (alias,))
         row = await cursor.fetchone()
-        return dict(row)
+        return dict(row) if row else None
 
     @conn
     async def get_episodes_id(self, release_id: str) -> list[dict]:
