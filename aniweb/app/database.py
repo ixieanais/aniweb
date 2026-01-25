@@ -378,3 +378,15 @@ class DataBase:
     async def delete_view_time(self, episode_id: str):
         await self.cursor.execute("DELETE FROM view_time WHERE episode_id = ?", (episode_id,))
         await self.database.commit()
+
+    @conn
+    async def get_count_favorites(self) -> int:
+        cursor = await self.cursor.execute("SELECT rowid FROM favorites")
+        rows = await cursor.fetchall()
+        return len(rows) if rows else 0
+
+    @conn
+    async def get_count_viewed(self) -> int:
+        cursor = await self.cursor.execute("SELECT rowid FROM viewed")
+        rows = await cursor.fetchall()
+        return len(rows) if rows else 0
