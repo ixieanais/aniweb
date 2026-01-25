@@ -47,7 +47,6 @@ async def catalog_page(
     sort="RATING_DESC",
     status=""
 ):
-    # raise HTTPException(status_code=404, detail="page not found")
     service = CatalogService(database)
     await service.fetch_and_store_releases(page, genres, sort, status)
     context = await service.get_context()
@@ -57,16 +56,6 @@ async def catalog_page(
     return templates.TemplateResponse(
         request=request,
         name="catalog.html",
-        context=context
-    )
-
-@app.get("/profile", response_class=HTMLResponse, tags=["Pages"])
-async def profile_page(request: Request):
-    context = {}
-
-    return templates.TemplateResponse(
-        request=request,
-        name="not_found.html",
         context=context
     )
 
