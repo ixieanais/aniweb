@@ -149,6 +149,14 @@ async def delete_view_time(eid: str):
     await database.delete_view_time(eid)
     return {"status": "deleted"}
 
+@app.get("/viewed_count", tags=["Profile"])
+async def get_viewed_count():
+    return await database.get_count_viewed()
+
+@app.get("/favorites_count", tags=["Profile"])
+async def get_favorites_count():
+    return await database.get_count_favorites()
+
 @app.exception_handler(404)
 async def not_found_page(request: Request, exc: HTTPException):
     return templates.TemplateResponse(request=request, name="not_found.html")
