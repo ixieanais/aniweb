@@ -142,3 +142,29 @@
 .right-header-items svg {
     fill: var(--lightgray);
 }
+
+.profile-button {
+    position: relative;
+}
+
+.profile-wrapper {
+    width: 200px;
+    background-color: rgb(43, 43, 43);
+    border-radius: 8px;
+    position: absolute;
+    top: 120%;
+    right: 0;
+    padding: 10px 0;
+}
+
+.profile-item {
+    width: 100%;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    padding: 7px 10px;
+}
+
+.profile-wrapper .line {
+    background-color: rgb(70, 70, 70);
+}
