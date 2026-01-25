@@ -1,24 +1,38 @@
 const searchWrapper = document.querySelector(".search-wrapper");
 const searchInput = searchWrapper.querySelector("input");
+const profileButton = document.getElementById("profile");
 let searchTimer;
 
 
-searchInput.addEventListener("input", async () => {
-    const value = searchInput.value.trim();
+async function searchReleases(query) {
+    const response = await fetch(`/search?query=${query}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    return await response.json();
+} 
 
-    clearTimeout(searchTimer);
+async function getFavoritesCount() {
+    const response = await fetch("/favorites_count", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    return await response.json();
+}
 
-    if (value.length > 2) {
-        searchTimer = setTimeout(async () => {
-            addDiv(value);
-        }, 500);
-    }
-
-    var searchResultsDiv = document.querySelector(".search-result");
-    if (searchResultsDiv) {
-        searchResultsDiv.remove();
-    }
-});
+async function getViewedCount() {
+    const response = await fetch("/viewed_count", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    return await response.json();
+}
 
 
 async function addDiv(query) {
@@ -46,22 +60,81 @@ async function addDiv(query) {
     searchWrapper.appendChild(div);
 }
 
-document.addEventListener("click", async (e) => {
-    var searchResultsDiv = document.querySelector(".search-result");
+searchInput.addEventListener("input", async () => {
+    const value = searchInput.value.trim();
 
+    clearTimeout(searchTimer);
+
+    if (value.length > 2) {
+        searchTimer = setTimeout(async () => {
+            addDiv(value);
+        }, 500);
+    }
+
+    var searchResultsDiv = document.querySelector(".search-result");
+    if (searchResultsDiv) {
+        searchResultsDiv.remove();
+    }
+});
+
+
+function plural(n, one, two, five) {
+    n = Math.abs(n);
+
+    if (n % 100 >= 11 && n % 100 <= 14) return five;
+
+    const last = n % 10;
+
+    if (last === 1) return one;
+    if (last >= 2 && last <= 4) return two;
+    return five;
+}
+
+async function createProfileContainer() {
+    const favoritesCount = await getFavoritesCount();
+    const viewedCount = await getViewedCount();
+
+    const profileDiv = document.createElement("div");
+    profileDiv.className = "profile-wrapper";
+    profileDiv.innerHTML = `
+    <div class="line"></div>
+    <div class="profile-item">
+        <span class="text-halfgray">В избранном</span>
+        <span class="text-lightgray">${favoritesCount} ${plural(favoritesCount, "релиз", "релиза", "релизов")}</span>
+    </div>
+    <div class="line"></div>
+    <div class="profile-item">
+        <span class="text-halfgray">Просмотрено</span>
+        <span class="text-lightgray">${viewedCount} ${plural(viewedCount, "эпизод", "эпизода", "эпизодов")}</span>
+    </div>
+    <div class="line"></div>
+    `;
+    profileButton.parentElement.appendChild(profileDiv);
+}
+
+profileButton.addEventListener("click", async () => {
+    const profileContainer = document.querySelector(".profile-wrapper");
+    if (profileContainer) {
+        profileContainer.remove();
+        return;
+    }
+
+    await createProfileContainer();
+});
+
+
+document.addEventListener("click", async (e) => {
+    const profileContainer = document.querySelector(".profile-wrapper");
+    if (profileContainer) {
+        if (!profileContainer.contains(e.target) && !profileButton.contains(e.target)) {
+            profileContainer.remove();
+        }
+    }
+
+    const searchResultsDiv = document.querySelector(".search-result");
     if (searchResultsDiv) {
         if (!searchResultsDiv.contains(e.target) && e.target != searchInput) {
             searchResultsDiv.remove();
         }
     }
 });
-
-async function searchReleases(query) {
-    const response = await fetch(`/search?query=${query}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
-    return await response.json();
-}
