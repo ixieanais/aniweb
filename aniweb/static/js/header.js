@@ -43,7 +43,11 @@ async function addDiv(query) {
 
     const div = document.createElement("div");
     div.className = "search-result";
-    div.style.width = `${searchInput.offsetWidth}px`;
+    width = searchInput.offsetWidth;
+    if (width < 150) {
+        width = 250;
+    }
+    div.style.width = `${width}px`;
 
     releases.data.forEach(element => {
         var linkItem = document.createElement("a");
@@ -51,7 +55,7 @@ async function addDiv(query) {
         linkItem.innerHTML = `
             <div class="search-item">
                 <img src="https://anilibria.tv/${element.poster.optimized.preview}">
-                <span>${element.name.main}</span>
+                <span title="${element.name.main}">${element.name.main}</span>
             </div>
         `;
         div.appendChild(linkItem);
