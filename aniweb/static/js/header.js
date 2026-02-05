@@ -2,6 +2,8 @@ const searchWrapper = document.querySelector(".search-wrapper");
 const searchInput = searchWrapper.querySelector("input");
 const profileButton = document.getElementById("profile");
 let searchTimer;
+let favoritesCount;
+let viewedCount;
 
 
 async function searchReleases(query) {
@@ -95,8 +97,15 @@ function plural(n, one, two, five) {
 }
 
 async function createProfileContainer() {
-    const favoritesCount = await getFavoritesCount();
-    const viewedCount = await getViewedCount();
+    if (favoritesCount === undefined || viewedCount === undefined) {
+        var favoritesCountDiv = await getFavoritesCount();
+        var viewedCountDiv = await getViewedCount();
+        favoritesCount = favoritesCountDiv;
+        viewedCount = viewedCountDiv;
+    } else {
+        var favoritesCountDiv = favoritesCount;
+        var viewedCountDiv = viewedCount;
+    }
 
     const profileDiv = document.createElement("div");
     profileDiv.className = "profile-wrapper";
@@ -104,12 +113,12 @@ async function createProfileContainer() {
     <div class="line"></div>
     <div class="profile-item">
         <span class="text-halfgray">В избранном</span>
-        <span class="text-lightgray">${favoritesCount} ${plural(favoritesCount, "релиз", "релиза", "релизов")}</span>
+        <span class="text-lightgray">${favoritesCountDiv} ${plural(favoritesCountDiv, "релиз", "релиза", "релизов")}</span>
     </div>
     <div class="line"></div>
     <div class="profile-item">
         <span class="text-halfgray">Просмотрено</span>
-        <span class="text-lightgray">${viewedCount} ${plural(viewedCount, "эпизод", "эпизода", "эпизодов")}</span>
+        <span class="text-lightgray">${viewedCountDiv} ${plural(viewedCountDiv, "эпизод", "эпизода", "эпизодов")}</span>
     </div>
     <div class="line"></div>
     `;
