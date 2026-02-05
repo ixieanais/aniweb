@@ -157,12 +157,17 @@
 
 .profile-wrapper {
     width: 200px;
+    min-height: 120px;
     background-color: rgb(43, 43, 43);
     border-radius: 8px;
     position: absolute;
     top: 120%;
     right: 0;
     padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .profile-item {

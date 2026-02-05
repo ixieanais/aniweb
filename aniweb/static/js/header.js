@@ -97,7 +97,15 @@ function plural(n, one, two, five) {
 }
 
 async function createProfileContainer() {
+    const profileDiv = document.createElement("div");
+    profileDiv.className = "profile-wrapper";
+    profileButton.parentElement.appendChild(profileDiv);
+
     if (favoritesCount === undefined || viewedCount === undefined) {
+        profileDiv.innerHTML = `
+        <div class="loader"></div>
+        `;
+
         var favoritesCountDiv = await getFavoritesCount();
         var viewedCountDiv = await getViewedCount();
         favoritesCount = favoritesCountDiv;
@@ -107,8 +115,6 @@ async function createProfileContainer() {
         var viewedCountDiv = viewedCount;
     }
 
-    const profileDiv = document.createElement("div");
-    profileDiv.className = "profile-wrapper";
     profileDiv.innerHTML = `
     <div class="line"></div>
     <div class="profile-item">
@@ -122,7 +128,6 @@ async function createProfileContainer() {
     </div>
     <div class="line"></div>
     `;
-    profileButton.parentElement.appendChild(profileDiv);
 }
 
 profileButton.addEventListener("click", async () => {
@@ -151,3 +156,14 @@ document.addEventListener("click", async (e) => {
         }
     }
 });
+
+// function test() {
+//     const profileDiv = document.createElement("div");
+//     profileDiv.className = "profile-wrapper";
+//     profileDiv.innerHTML = `
+//     <div class="loader"></div>
+//     `;
+//     profileButton.parentElement.appendChild(profileDiv);
+// }
+
+// test()
