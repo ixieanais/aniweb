@@ -76,15 +76,6 @@ class DataBase:
             )
         """)
         await self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS stars (
-                release_id VARCHAR(36),
-                quanity INTEGER,
-                added_at INTEGER,
-                FOREIGN KEY(release_id) REFERENCES releases(id),
-                UNIQUE(release_id)
-            )
-        """)
-        await self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS viewed (
                 episode_id VARCHAR(36),
                 release_id VARCHAR(36),
@@ -102,7 +93,7 @@ class DataBase:
                 updated_at INTEGER,
                 FOREIGN KEY(episode_id) REFERENCES episodes(id),
                 FOREIGN KEY(release_id) REFERENCES releases(id),
-                UNIQUE(episode_id)
+                UNIQUE(release_id)
             )
         """)
         await self.cursor.execute("""
@@ -370,8 +361,8 @@ class DataBase:
         return row[0] if row else None
 
     @conn
-    async def update_view_time(self, episode_id: str, time: int, updated_at: float):
-        await self.cursor.execute("UPDATE view_time SET time = ?, updated_at = ? WHERE episode_id = ?", (time, updated_at, episode_id))
+    async def update_view_time(self, release_id: str, episode_id: str, time: int, updated_at: float):
+        await self.cursor.execute("UPDATE view_time SET episode_id = ?, time = ?, updated_at = ? WHERE release_id = ?", (episode_id, time, updated_at, release_id))
         await self.database.commit()
 
     @conn

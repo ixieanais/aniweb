@@ -20,8 +20,8 @@ async function saveViewTime(episode_id, time) {
     console.info(await response.json());
 }
 
-async function updateViewTime(episode_id, time) {
-    const response = await fetch(`/view_time/${episode_id}`, {
+async function updateViewTime(release_id, episode_id, time) {
+    const response = await fetch(`/view_time/${release_id}/${episode_id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json"
@@ -162,7 +162,7 @@ document.getElementById("video-preview").addEventListener("click", async () => {
                         await saveViewTime(episodeId, currentTime);
                         viewTimeSaved = true;
                     } else {
-                        await updateViewTime(episodeId, currentTime);
+                        await updateViewTime(video.dataset.releaseId, episodeId, currentTime);
                     }
                 } else {
                     if (!viewTimeDeleted) {
