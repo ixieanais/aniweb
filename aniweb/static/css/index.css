@@ -184,4 +184,11 @@
     .releases-span {
         font-size: 18px !important;
     }
+
+    .episode-info {
+        font-size: 14px;
+        width: 110px;
+        height: 40px;
+        bottom: 12px;
+    }
 }
