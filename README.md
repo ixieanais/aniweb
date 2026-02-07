@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="140" height="140" src="docs/logo.png" alt="logo">
+<img width="160" height="160" src="docs/logo.png" alt="logo">
 
 # Aniweb
 
