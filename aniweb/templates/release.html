@@ -17,8 +17,8 @@
             <div class="release-wrapper">
                 <div class="release-card">
                     <div class="release-body">
-                        <img class="release-image img-round" src="{{ release_data.poster }}">
-                        <div class="release-info">
+                        <div class="image-container">
+                            <img class="release-image img-round" src="{{ release_data.poster }}">
                             <button class="favorite-button">
                                 {% if is_favorite %}
                                     <div class="svg" id="starred">
@@ -30,6 +30,8 @@
                                     </div>
                                 {% endif %}
                             </button>
+                        </div>
+                        <div class="release-info">
                             <span class="name">{{ release_data.name }}</span>
                             <div class="info-item">
                                 <span class="text-gray">Тип:</span>
