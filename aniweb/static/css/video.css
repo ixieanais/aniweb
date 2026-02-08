@@ -215,3 +215,32 @@ video {
         height: 50px;
     }
 }
+
+@media (max-width: 450px) {
+    .names .title-name {
+        font-size: 18px;
+    }
+
+    .names .episode-name {
+        font-size: 16px;
+    }
+
+    .episode-order span {
+        font-size: 16px;
+    }
+
+    .video-wrapper {
+        border: 5px solid rgb(50, 50, 50)
+    }
+
+    .default-button {
+        height: 45px;
+        padding: 0 20px !important;
+        min-width: 100px;
+    }
+
+    .transparent-button {
+        height: 45px;
+        width: 100px;
+    }
+}
