@@ -18,6 +18,10 @@
     gap: 30px;
 }
 
+.image-container {
+    position: relative;
+}
+
 .release-image {
     width: 300px;
 }
@@ -32,8 +36,8 @@
 
 .favorite-button {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 8px;
+    right: 8px;
     width: 48px;
     height: 48px;
     font-family: var(--primary-font);
