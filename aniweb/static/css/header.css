@@ -85,7 +85,7 @@
 .search-result {
     position: absolute;
     height: auto;
-    min-height: 50px;
+    min-height: 68px;
     max-height: 400px;
     background-color: rgb(43, 43, 43);
     z-index: 1000;
@@ -93,6 +93,7 @@
     top: 52px;
     right: 0;
     display: flex;
+    justify-content: center;
     flex-direction: column;
     padding: 10px 0;
     overflow-y: auto;
@@ -189,6 +190,23 @@
 
 .profile-wrapper .line {
     background-color: rgb(70, 70, 70);
+}
+
+.loader-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-data-label {
+    font-size: 24px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @media (max-width: 450px) {
