@@ -4,17 +4,27 @@ const profileButton = document.getElementById("profile");
 let searchTimer;
 let favoritesCount;
 let viewedCount;
+let currentSearchQuery = "";
+let abortController = null;
 
-
-async function searchReleases(query) {
-    const response = await fetch(`/search?query=${query}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
+async function searchReleases(query, signal = null) {
+    try {
+        const response = await fetch(`/search?query=${query}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            signal: signal
+        });
+        return await response.json();
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            console.log('Запрос отменен');
+            return null;
         }
-    });
-    return await response.json();
-} 
+        throw error;
+    }
+}
 
 async function getFavoritesCount() {
     const response = await fetch("/favorites_count", {
@@ -38,18 +48,42 @@ async function getViewedCount() {
 
 
 async function addDiv(query) {
-    if (document.querySelector(".search-result")) return;
+    if (query !== currentSearchQuery) {
+        return;
+    }
 
-    const releases = await searchReleases(query);
-    if (releases.data.length === 0) return;
+    if (document.querySelector(".search-result")) return;
 
     const div = document.createElement("div");
     div.className = "search-result";
     width = searchInput.offsetWidth;
-    if (width < 150) {
-        width = 250;
-    }
+    if (width < 150) width = 250;
     div.style.width = `${width}px`;
+    div.innerHTML = `
+    <div class="loader-wrapper">
+        <div class="loader"></div>
+    </div>
+    `;
+    searchWrapper.appendChild(div);
+
+    if (abortController) {
+        abortController.abort();
+    }
+
+    abortController = new AbortController();
+
+    const releases = await searchReleases(query, abortController.signal);
+
+    if (!releases || query !== currentSearchQuery) {
+        return;
+    }
+
+    if (releases.data.length === 0) {
+        div.innerHTML = `<div class="no-data-label">Ничего не найдено</div>`;
+        return;
+    }
+
+    div.innerHTML = "";
 
     releases.data.forEach(element => {
         var linkItem = document.createElement("a");
@@ -62,25 +96,37 @@ async function addDiv(query) {
         `;
         div.appendChild(linkItem);
     });
-
-    searchWrapper.appendChild(div);
 }
 
 searchInput.addEventListener("input", async () => {
     const value = searchInput.value.trim();
 
+    currentSearchQuery = value;
+
     clearTimeout(searchTimer);
 
-    if (value.length > 2) {
-        searchTimer = setTimeout(async () => {
-            addDiv(value);
-        }, 500);
+    if (abortController) {
+        abortController.abort();
+        abortController = null;
     }
 
     var searchResultsDiv = document.querySelector(".search-result");
+    if (value.length < 3) {
+        if (searchResultsDiv) {
+            searchResultsDiv.remove();
+        }
+        return;
+    }
+
     if (searchResultsDiv) {
         searchResultsDiv.remove();
     }
+
+    searchTimer = setTimeout(async () => {
+        if (value === currentSearchQuery) {
+            await addDiv(value);
+        }
+    }, 500);
 });
 
 
@@ -156,14 +202,3 @@ document.addEventListener("click", async (e) => {
         }
     }
 });
-
-// function test() {
-//     const profileDiv = document.createElement("div");
-//     profileDiv.className = "profile-wrapper";
-//     profileDiv.innerHTML = `
-//     <div class="loader"></div>
-//     `;
-//     profileButton.parentElement.appendChild(profileDiv);
-// }
-
-// test()
