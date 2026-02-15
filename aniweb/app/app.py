@@ -83,13 +83,13 @@ async def release_page(request: Request, alias: str):
     )
 
 @app.get("/video/{id}", response_class=HTMLResponse, tags=["Pages"])
-async def video_page(reqeust: Request, id: str):
+async def video_page(request: Request, id: str):
     service = VideoService(database)
     await service.get_info(id)
     context = await service.get_context()
 
     return templates.TemplateResponse(
-        request=reqeust,
+        request=request,
         name="video.html",
         context=context
     )
