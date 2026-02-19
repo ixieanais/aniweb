@@ -7,8 +7,8 @@ from database import DataBase
 class FavoritesService:
     database: DataBase
 
-    async def get_context(self):
-        favorites = await self.database.get_favorites()
+    async def get_context(self, uid: str):
         return {
-            "favorites": favorites
+            "is_authorized": await self.database.is_authorized(uid),
+            "favorites": await self.database.get_favorites(uid)
         }

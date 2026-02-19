@@ -5,6 +5,7 @@
     --primary-font: Geologica;
     --default-button: #323232;
     --default-button-hover: #464646;
+    --logo-color: #c92424;
     --lightgray: #dedede;
     --halfgray: #a6a6a6;
     --gray: #7b7b7b;
@@ -123,7 +124,7 @@ body, html {
     width: 35px;
     aspect-ratio: 1;
     --_g: no-repeat radial-gradient(circle closest-side,#ffffff 90%,#ffffff00);
-    background: 
+    background:
         var(--_g) 0    0,
         var(--_g) 0    100%,
         var(--_g) 100% 100%;

@@ -8,8 +8,9 @@ from database import DataBase
 class VideoService:
     database: DataBase
 
-    async def get_info(self, id: str):
+    async def get_info(self, id: str, uid: str):
         self.id = id
+        self.uid = uid
         self.episode_data = await self.database.get_episode_info(id)
         if self.episode_data is None:
             raise HTTPException(status_code=404)
@@ -18,6 +19,7 @@ class VideoService:
 
     async def get_context(self):
         return {
+            "is_authorized": await self.database.is_authorized(self.uid),
             "title": self.episode_data["anime_name"],
             "episode_name": self.episode_data["episode_name"] if self.episode_data["episode_name"] is not None else "",
             "order": self.episode_data["ordinal"],
@@ -29,6 +31,6 @@ class VideoService:
             "opening": self.episode_data["opening"],
             "ending": self.episode_data["ending"],
             "release_id": self.episode_data["release_id"],
-            "view_time": await self.database.get_view_time(self.id),
-            "is_viewed": await self.database.get_is_viewed(self.id)
+            "view_time": await self.database.get_view_time(self.uid, self.id),
+            "is_viewed": await self.database.get_is_viewed(self.uid, self.id)
         }

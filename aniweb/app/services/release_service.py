@@ -13,8 +13,9 @@ from config import UPDATE_TIME
 class ReleaseService:
     database: DataBase
 
-    async def update_release_if_needed(self, alias: str):
+    async def update_release_if_needed(self, alias: str, uid: str):
         self.alias = alias
+        self.uid = uid
         release_info = await self.database.get_release(alias)
         if release_info is None:
             raise HTTPException(status_code=404)
@@ -68,7 +69,7 @@ class ReleaseService:
         return {
             "release_data": release_data,
             "episodes_data": await self.database.get_episodes_id(self.release_id),
-            "viewed_data": await self.database.get_viewed_episodes(self.release_id),
+            "viewed_data": await self.database.get_viewed_episodes(self.release_id, self.uid),
             "genres": json.loads(release_data["genres"]),
-            "is_favorite": await self.database.is_favorite(self.alias)
+            "is_favorite": await self.database.is_favorite(self.uid, self.alias)
         }

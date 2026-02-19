@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for("static", path="/favicon.ico") }}" rel="icon">
+    <link href="{{ url_for("static", path="/css/styles.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", path="/css/header.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", path="/css/index.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", path="/css/sign.css") }}" rel="stylesheet">
+    <title>Aniweb - Логин</title>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="main">
+        <div class="main-wrapper">
+            <div class="sign-wrapper">
+                <div class="sign-container">
+                    <form action="" method="post" id="login-form">
+                        <label for="email">Эллектронная почта</label>
+                        <input type="email" name="email" id="email" required placeholder="Введите вашу эллектронную почту" autocomplete="email">
+                        <span class="span-polite" id="email_span">Неверная эллектронная почта</span>
+                        <label for="password">Пароль</label>
+                        <input type="password" name="password" id="password" required placeholder="Введите ваш пароль" maxlength="50" autocomplete="current-password">
+                        <span class="span-polite" id="password_span">Неверный пароль</span>
+                        <button type="submit" id="submit_button" disabled>Войти</button>
+                        <p style="margin-top: 7px;"><a href="/signup" style="float: right;">Зарегистрироваться</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for("static", path="/js/header.js") }}"></script>
+    <script src="{{ url_for("static", path="/js/login.js") }}"></script>
+</body>
+</html>

@@ -12,3 +12,8 @@ class FavoriteRequest(BaseModel):
 
 class ViewTimeRequest(BaseModel):
     time: int
+
+
+class UserLoginSchema(BaseModel):
+    email: str
+    password: str

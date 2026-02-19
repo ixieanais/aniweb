@@ -30,7 +30,7 @@ class CatalogService:
                     type=release["type"]["value"],
                     year=release["year"],
                     source="anilibria",
-                    poster=f'https://anilibria.tv{release["poster"]["src"]}',
+                    poster=f'https://anilibria.tv{release["poster"]["optimized"]["preview"]}',
                     alias=release["alias"],
                     description=release["description"],
                     age_rating=release["age_rating"]["label"],

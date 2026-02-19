@@ -69,31 +69,37 @@ class DataBase:
         """)
         await self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS favorites (
+                uid VARCHAR(36) NOT NULL,
                 release_id VARCHAR(36),
                 added_at INTEGER,
                 FOREIGN KEY(release_id) REFERENCES releases(id),
-                UNIQUE(release_id)
+                FOREIGN KEY(uid) REFERENCES users(uid),
+                UNIQUE(uid, release_id)
             )
         """)
         await self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS viewed (
+                uid VARCHAR(36) NOT NULL,
                 episode_id VARCHAR(36),
                 release_id VARCHAR(36),
                 added_at INTEGER,
                 FOREIGN KEY(episode_id) REFERENCES episodes(id),
                 FOREIGN KEY(release_id) REFERENCES releases(id),
-                UNIQUE(episode_id)
+                FOREIGN KEY(uid) REFERENCES users(uid),
+                UNIQUE(uid, episode_id)
             )
         """)
         await self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS view_time (
+                uid VARCHAR(36) NOT NULL,
                 episode_id VARCHAR(36),
                 release_id VARCHAR(36),
                 time INTEGER,
                 updated_at INTEGER,
                 FOREIGN KEY(episode_id) REFERENCES episodes(id),
                 FOREIGN KEY(release_id) REFERENCES releases(id),
-                UNIQUE(release_id)
+                FOREIGN KEY(uid) REFERENCES users(uid),
+                UNIQUE(uid, release_id)
             )
         """)
         await self.cursor.execute("""
@@ -101,6 +107,17 @@ class DataBase:
                 id VARCHAR(36) NOT NULL PRIMARY KEY,
                 expires_in INTEGER,
                 UNIQUE(id)
+            )
+        """)
+        await self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                uid VARCHAR(36) NOT NULL PRIMARY KEY,
+                username VARCHAR(24),
+                email VARCHAR(40),
+                password BLOB,
+                connected_at INTEGER,
+                last_visit_at INTEGER,
+                UNIQUE(email)
             )
         """)
         await self.database.commit()
@@ -245,9 +262,9 @@ class DataBase:
         return row[0] if row else None
 
     @conn
-    async def get_viewed_episodes(self, release_id: str):
+    async def get_viewed_episodes(self, release_id: str, uid: str):
         self.cursor.row_factory = aiosqlite.Row
-        cursor = await self.cursor.execute("SELECT episode_id FROM viewed WHERE release_id = ?", (release_id,))
+        cursor = await self.cursor.execute("SELECT episode_id FROM viewed WHERE release_id = ? AND uid = ?", (release_id, uid))
         rows = await cursor.fetchall()
         return [dict(row) for row in rows]
 
@@ -276,108 +293,149 @@ class DataBase:
         return await cursor.fetchone()
 
     @conn
-    async def insert_viewed(self, episode_id: str, release_id: str, added_at: float):
-        await self.cursor.execute("INSERT OR IGNORE INTO viewed VALUES (?, ?, ?)", (episode_id, release_id, added_at))
+    async def insert_viewed(self, uid: str, episode_id: str, release_id: str, added_at: float):
+        await self.cursor.execute("INSERT OR IGNORE INTO viewed VALUES (?, ?, ?, ?)", (uid, episode_id, release_id, added_at))
         await self.database.commit()
 
     @conn
-    async def get_is_viewed(self, episode_id: str) -> bool:
-        cursor = await self.cursor.execute("SELECT * FROM viewed WHERE episode_id = ?", (episode_id,))
+    async def get_is_viewed(self, uid: str, episode_id: str) -> bool:
+        cursor = await self.cursor.execute("SELECT * FROM viewed WHERE episode_id = ? AND uid = ?", (episode_id, uid))
         row = await cursor.fetchone()
         return True if row else False
 
     @conn
-    async def insert_favorite(self, alias: str, added_at: float):
+    async def insert_favorite(self, uid: str, alias: str, added_at: float):
         release_id = await self._get_release_id(alias)
-        await self.cursor.execute("INSERT INTO favorites VALUES (?, ?)", (release_id, added_at))
+        await self.cursor.execute("INSERT INTO favorites VALUES (?, ?, ?)", (uid, release_id, added_at))
         await self.database.commit()
 
     @conn
-    async def is_favorite(self, alias: str) -> bool:
+    async def is_favorite(self, uid: str, alias: str) -> bool:
         release_id = await self._get_release_id(alias)
-        cursor = await self.cursor.execute("SELECT rowid FROM favorites WHERE release_id = ?", (release_id,))
+        cursor = await self.cursor.execute("SELECT rowid FROM favorites WHERE release_id = ? AND uid = ?" , (release_id, uid))
         result = await cursor.fetchone()
         return True if result else False
 
     @conn
-    async def get_favorites(self):
+    async def get_favorites(self, uid: str):
         self.cursor.row_factory = aiosqlite.Row
         cursor = await self.cursor.execute("""
             SELECT r.name, r.type, r.year, r.poster, r.alias, r.age_rating
             FROM releases AS r
             INNER JOIN favorites AS f
             ON r.id = f.release_id
+            WHERE uid = ?
             ORDER BY f.added_at DESC
-        """)
+        """, (uid,))
         rows = await cursor.fetchall()
         return [dict(row) for row in rows]
 
     @conn
-    async def delete_favorite(self, alias: str):
+    async def delete_favorite(self, uid: str, alias: str):
         release_id = await self._get_release_id(alias)
-        await self.cursor.execute("DELETE FROM favorites WHERE release_id = ?", (release_id,))
+        await self.cursor.execute("DELETE FROM favorites WHERE release_id = ? AND uid = ?", (release_id, uid))
         await self.database.commit()
 
     @conn
-    async def get_recently_releases(self):
+    async def get_recently_releases(self, uid: str):
         self.cursor.row_factory = aiosqlite.Row
         cursor = await self.cursor.execute("""
             SELECT r.name, r.type, r.year, r.poster, r.alias, r.age_rating
             FROM releases AS r
             INNER JOIN view_time AS v
             ON r.id = v.release_id
+            WHERE uid = ?
             ORDER BY v.updated_at DESC
-        """)
+        """, (uid, ))
         rows = await cursor.fetchall()
         return [dict(row) for row in rows]
 
     @conn
-    async def get_recently_episodes(self):
+    async def get_recently_episodes(self, uid: str):
         self.cursor.row_factory = aiosqlite.Row
         cursor = await self.cursor.execute("""
             SELECT e.id, e.ordinal
             FROM episodes AS e
             INNER JOIN view_time AS v
             ON e.id = v.episode_id
+            WHERE uid = ?
             ORDER BY v.updated_at DESC
-        """)
+        """, (uid,))
         rows = await cursor.fetchall()
         return [dict(row) for row in rows]
 
     @conn
-    async def save_view_time(self, episode_id: str, time: int, updated_at: float):
+    async def save_view_time(self, uid: str, episode_id: str, time: int, updated_at: float):
         cursor = await self.cursor.execute("SELECT release_id FROM episodes WHERE id = ?", (episode_id,))
         row = await cursor.fetchone()
         await self.cursor.execute(
-            "INSERT OR IGNORE INTO view_time VALUES (?, ?, ?, ?)",
-            (episode_id, row[0], time, updated_at)
+            "INSERT OR IGNORE INTO view_time VALUES (?, ?, ?, ?, ?)",
+            (uid, episode_id, row[0], time, updated_at)
         )
         await self.database.commit()
 
     @conn
-    async def get_view_time(self, episode_id: str) -> Optional[int]:
-        cursor = await self.cursor.execute("SELECT time FROM view_time WHERE episode_id = ?", (episode_id,))
+    async def get_view_time(self, uid: str, episode_id: str) -> Optional[int]:
+        cursor = await self.cursor.execute("SELECT time FROM view_time WHERE episode_id = ? AND uid = ?", (episode_id, uid))
         row = await cursor.fetchone()
         return row[0] if row else None
 
     @conn
-    async def update_view_time(self, release_id: str, episode_id: str, time: int, updated_at: float):
-        await self.cursor.execute("UPDATE view_time SET episode_id = ?, time = ?, updated_at = ? WHERE release_id = ?", (episode_id, time, updated_at, release_id))
+    async def update_view_time(self, uid: str, release_id: str, episode_id: str, time: int, updated_at: float):
+        await self.cursor.execute("UPDATE view_time SET episode_id = ?, time = ?, updated_at = ? WHERE release_id = ? AND uid = ?", (episode_id, time, updated_at, release_id, uid))
         await self.database.commit()
 
     @conn
-    async def delete_view_time(self, episode_id: str):
-        await self.cursor.execute("DELETE FROM view_time WHERE episode_id = ?", (episode_id,))
+    async def delete_view_time(self, uid: str, episode_id: str):
+        await self.cursor.execute("DELETE FROM view_time WHERE episode_id = ? AND uid = ?", (episode_id, uid))
         await self.database.commit()
 
     @conn
-    async def get_count_favorites(self) -> int:
-        cursor = await self.cursor.execute("SELECT rowid FROM favorites")
+    async def get_count_favorites(self, uid: str) -> int:
+        cursor = await self.cursor.execute("SELECT rowid FROM favorites WHERE uid = ?", (uid,))
         rows = await cursor.fetchall()
         return len(rows) if rows else 0
 
     @conn
-    async def get_count_viewed(self) -> int:
-        cursor = await self.cursor.execute("SELECT rowid FROM viewed")
+    async def get_count_viewed(self, uid: str) -> int:
+        cursor = await self.cursor.execute("SELECT rowid FROM viewed WHERE uid = ?", (uid,))
         rows = await cursor.fetchall()
         return len(rows) if rows else 0
+
+    @conn
+    async def save_user(
+        self,
+        uid: str,
+        username: str,
+        email: str,
+        password: str,
+        connected_at: int,
+        last_visit_at: int
+    ):
+        await self.cursor.execute(
+            "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)",
+            (uid, username, email, password, connected_at, last_visit_at)
+        )
+        await self.database.commit()
+
+    @conn
+    async def user_exists(self, email: str) -> bool:
+        cursor = await self.cursor.execute("SELECT rowid FROM users WHERE email = ?", (email,))
+        row = await cursor.fetchone()
+        return True if row else False
+
+    @conn
+    async def is_authorized(self, uid: Optional[str]) -> bool:
+        return True if uid is not None else False
+
+    @conn
+    async def get_user_info(self, email: str):
+        self.cursor.row_factory = aiosqlite.Row
+        cursor = await self.cursor.execute("SELECT uid, password FROM users WHERE email = ?", (email,))
+        row = await cursor.fetchone()
+        return dict(row) if row else None
+
+    @conn
+    async def delete_user(self, uid: str):
+        await self.cursor.execute("DELETE FROM users WHERE uid = ?", (uid,))
+        await self.database.commit()

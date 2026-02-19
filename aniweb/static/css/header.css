@@ -43,7 +43,7 @@
 .logo {
     width: 48px;
     height: 48px;
-    background-color: #c92424;
+    background-color: var(--logo-color);
     padding: 8px;
     border-radius: 14px;
 }

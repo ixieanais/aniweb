@@ -15,7 +15,8 @@ from config import UPDATE_TIME
 class HomeService:
     database: DataBase
 
-    async def update_releases_if_needed(self):
+    async def update_releases_if_needed(self, uid: str):
+        self.uid = uid
         expires_in = await self.database.get_expires_in("main")
         current_time = round(datetime.now().timestamp())
 
@@ -50,7 +51,7 @@ class HomeService:
                     type=result["type"]["value"],
                     year=result["year"],
                     source="anilibria",
-                    poster=f'https://anilibria.tv{result["poster"]["src"]}',
+                    poster=f'https://anilibria.tv{result["poster"]["optimized"]["preview"]}',
                     alias=result["alias"],
                     description=result["description"],
                     age_rating=result["age_rating"]["label"],
@@ -79,6 +80,6 @@ class HomeService:
     async def get_context(self):
         return {
             "latest": await self.database.get_latest_releases(),
-            "recently": await self.database.get_recently_releases(),
-            "recently_episodes": await self.database.get_recently_episodes()
+            "recently": await self.database.get_recently_releases(self.uid) if self.uid else [],
+            "recently_episodes": await self.database.get_recently_episodes(self.uid) if self.uid else []
         }
