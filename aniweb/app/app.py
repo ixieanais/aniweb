@@ -31,9 +31,7 @@ templates = Jinja2Templates(directory=config.TEMPLATES_PATH)
 
 
 async def is_authorized(request: Request) -> bool:
-    if request.cookies.get(config.SESSION_NAME):
-        return True
-    return False
+    return await database.is_authorized(request.cookies.get(config.SESSION_NAME))
 
 
 @app.get("/", response_class=HTMLResponse, tags=["Pages"])
