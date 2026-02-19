@@ -50,7 +50,7 @@ class HomeService:
                     type=result["type"]["value"],
                     year=result["year"],
                     source="anilibria",
-                    poster=f'https://anilibria.tv{result["poster"]["src"]}',
+                    poster=f'https://anilibria.tv{result["poster"]["optimized"]["preview"]}',
                     alias=result["alias"],
                     description=result["description"],
                     age_rating=result["age_rating"]["label"],
