@@ -103,6 +103,13 @@ class DataBase:
                 UNIQUE(id)
             )
         """)
+        await self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS stars (
+                release_id VARCHAR(36),
+                quanity INTEGER,
+                UNIQUE(release_id)
+            )
+        """)
         await self.database.commit()
 
     @conn
