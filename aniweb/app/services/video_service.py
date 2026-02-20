@@ -19,7 +19,6 @@ class VideoService:
 
     async def get_context(self):
         return {
-            "is_authorized": await self.database.is_authorized(self.uid),
             "title": self.episode_data["anime_name"],
             "episode_name": self.episode_data["episode_name"] if self.episode_data["episode_name"] is not None else "",
             "order": self.episode_data["ordinal"],

@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="video-wrapper">
-                    {% if is_authorized %}
+                    {% if authorized %}
                         <div class="video-container">
                             <video id="player" autoplay controls data-id="{{ id }}" data-release-id="{{ release_id }}" data-opening="{{ opening }}" data-ending="{{ ending }}" data-view-time="{{ view_time }}" data-is-viewed="{{ is_viewed|tojson }}" data-next-episode-id="{{ order_neighbors.next.id }}"></video>
                         </div>
