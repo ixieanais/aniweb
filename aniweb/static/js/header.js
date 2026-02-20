@@ -1,6 +1,7 @@
 const searchWrapper = document.querySelector(".search-wrapper");
 const searchInput = searchWrapper.querySelector("input");
 const profileButton = document.getElementById("profile");
+let isAuthorized = profileButton.dataset.authorized;
 let searchTimer;
 let favoritesCount;
 let viewedCount;
@@ -147,34 +148,57 @@ async function createProfileContainer() {
     profileDiv.className = "profile-wrapper";
     profileButton.parentElement.appendChild(profileDiv);
 
-    if (favoritesCount === undefined || viewedCount === undefined) {
+    if (isAuthorized === "1") {
+        if (favoritesCount === undefined || viewedCount === undefined) {
+            profileDiv.innerHTML = `
+            <div class="loader"></div>
+            `;
+
+            var favoritesCountDiv = await getFavoritesCount();
+            var viewedCountDiv = await getViewedCount();
+            favoritesCount = favoritesCountDiv;
+            viewedCount = viewedCountDiv;
+        } else {
+            var favoritesCountDiv = favoritesCount;
+            var viewedCountDiv = viewedCount;
+        }
+
         profileDiv.innerHTML = `
-        <div class="loader"></div>
+        <div class="line"></div>
+        <div class="profile-item">
+            <span class="text-halfgray">В избранном</span>
+            <span class="text-lightgray">${favoritesCountDiv} ${plural(favoritesCountDiv, "релиз", "релиза", "релизов")}</span>
+        </div>
+        <div class="line"></div>
+        <div class="profile-item">
+            <span class="text-halfgray">Просмотрено</span>
+            <span class="text-lightgray">${viewedCountDiv} ${plural(viewedCountDiv, "эпизод", "эпизода", "эпизодов")}</span>
+        </div>
+        <div class="line"></div>
+        <div class="profile-authorize" style="margin-top: 10px;">
+            <div class="authorize">
+                <button id="logout" onclick="logout()">Выйти</button>
+            </div>
+        </div>
         `;
-
-        var favoritesCountDiv = await getFavoritesCount();
-        var viewedCountDiv = await getViewedCount();
-        favoritesCount = favoritesCountDiv;
-        viewedCount = viewedCountDiv;
     } else {
-        var favoritesCountDiv = favoritesCount;
-        var viewedCountDiv = viewedCount;
+        profileDiv.innerHTML = `
+        <div class="profile-authorize">
+            <span class="text-lightgray">У вас нет аккаунта</span>
+            <div class="authorize">
+                <button><a href="/login">Войти</a></button>
+            </div>
+        </div>
+        `;
     }
-
-    profileDiv.innerHTML = `
-    <div class="line"></div>
-    <div class="profile-item">
-        <span class="text-halfgray">В избранном</span>
-        <span class="text-lightgray">${favoritesCountDiv} ${plural(favoritesCountDiv, "релиз", "релиза", "релизов")}</span>
-    </div>
-    <div class="line"></div>
-    <div class="profile-item">
-        <span class="text-halfgray">Просмотрено</span>
-        <span class="text-lightgray">${viewedCountDiv} ${plural(viewedCountDiv, "эпизод", "эпизода", "эпизодов")}</span>
-    </div>
-    <div class="line"></div>
-    `;
 }
+
+
+function logout() {
+    cookieStore.delete("session_id");
+    window.location.href = "/";
+}
+
 
 profileButton.addEventListener("click", async () => {
     const profileContainer = document.querySelector(".profile-wrapper");
