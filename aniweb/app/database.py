@@ -426,6 +426,9 @@ class DataBase:
 
     @conn
     async def is_authorized(self, uid: Optional[str]) -> bool:
+        if uid is None:
+            return False
+
         cursor = await self.cursor.execute("SELECT rowid FROM users WHERE uid = ?", (uid,))
         row = await cursor.fetchone()
         return True if row is not None else False
