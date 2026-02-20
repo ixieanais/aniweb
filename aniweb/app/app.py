@@ -35,10 +35,11 @@ async def is_authorized(request: Request) -> bool:
 
 
 @app.get("/", response_class=HTMLResponse, tags=["Pages"])
-async def home_page(request: Request):
+async def home_page(request: Request, authorized: bool = Depends(is_authorized)):
     service = HomeService(database)
     await service.update_releases_if_needed(request.cookies.get(config.SESSION_NAME))
     context = await service.get_context()
+    context["authorized"] = authorized
 
     return templates.TemplateResponse(
         request=request,
@@ -52,11 +53,13 @@ async def catalog_page(
     page=1,
     genres="",
     sort="RATING_DESC",
-    status=""
+    status="",
+    authorized: bool = Depends(is_authorized)
 ):
     service = CatalogService(database)
     await service.fetch_and_store_releases(page, genres, sort, status)
     context = await service.get_context()
+    context["authorized"] = authorized
     if context["meta"]["current_page"] == context["meta"]["total_pages"] + 1:
         raise HTTPException(status_code=404, detail="page not found")
 
@@ -122,9 +125,13 @@ async def login(response: Response, creds: schemas.UserLoginSchema):
     return {config.SESSION_NAME: user_info["uid"]}
 
 @app.get("/favorites", response_class=HTMLResponse, tags=["Pages"])
-async def favorites_page(request: Request):
+async def favorites_page(request: Request, authorized: bool = Depends(is_authorized)):
+    if not authorized:
+        return RedirectResponse("/")
+
     service = FavoritesService(database)
     context = await service.get_context(request.cookies.get(config.SESSION_NAME))
+    context["authorized"] = authorized
 
     return templates.TemplateResponse(
         request=request,
@@ -133,10 +140,11 @@ async def favorites_page(request: Request):
     )
 
 @app.get("/release/{alias}", response_class=HTMLResponse, tags=["Pages"])
-async def release_page(request: Request, alias: str):
+async def release_page(request: Request, alias: str, authorized: bool = Depends(is_authorized)):
     service = ReleaseService(database)
     await service.update_release_if_needed(alias, request.cookies.get(config.SESSION_NAME))
     context = await service.get_context()
+    context["authorized"] = authorized
 
     return templates.TemplateResponse(
         request=request,
@@ -148,10 +156,11 @@ async def forbidden_page():
     raise HTTPException(status_code=403)
 
 @app.get("/video/{id}", response_class=HTMLResponse, tags=["Pages"])
-async def video_page(request: Request, id: str):
+async def video_page(request: Request, id: str, authorized: bool = Depends(is_authorized)):
     service = VideoService(database)
     await service.get_info(id, request.cookies.get(config.SESSION_NAME))
     context = await service.get_context()
+    context["authorized"] = authorized
 
     return templates.TemplateResponse(
         request=request,
