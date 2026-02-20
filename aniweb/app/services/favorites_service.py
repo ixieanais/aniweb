@@ -9,6 +9,5 @@ class FavoritesService:
 
     async def get_context(self, uid: str):
         return {
-            "is_authorized": await self.database.is_authorized(uid),
             "favorites": await self.database.get_favorites(uid)
         }
