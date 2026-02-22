@@ -218,7 +218,7 @@ class DataBase:
         for resolution in resolutions:
             cursor = await self.cursor.execute(f"SELECT url_{resolution} FROM episodes WHERE id = ?", (id,))
             result = await cursor.fetchone()
-            if result is not None:
+            if result[0] is not None:
                 sources[resolution] = result[0]
 
         return sources
