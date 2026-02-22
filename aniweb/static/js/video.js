@@ -59,13 +59,15 @@ document.getElementById("video-preview").addEventListener("click", async () => {
     videoPreview.style.display = "none";
     video.style.display = "block";
 
+    const qualities = Object.keys(sources).map(Number).reverse();
+
     const player = new Plyr(video, {
         settings: ['quality', 'speed'],
         quality: {
-        default: 720,
-        options: [1080, 720, 480],
-        forced: true,
-        onChange: updateQuality
+            default: Math.max(...qualities),
+            options: qualities,
+            forced: true,
+            onChange: updateQuality
         },
         keyboard: { focused: false, global: true },
         disableContextMenu: false,
