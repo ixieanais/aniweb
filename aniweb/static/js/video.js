@@ -154,6 +154,11 @@ document.getElementById("video-preview").addEventListener("click", async () => {
 
             if (video.currentTime >= startEnding - 20 && !viewed) {
                 await updateViewedState(episodeId, video.dataset.releaseId);
+                await deleteViewTime(episodeId);
+                if (video.dataset.nextEpisodeId != "") {
+                    await saveViewTime(video.dataset.nextEpisodeId, 0);
+                }
+                viewTimeDeleted = true;
                 viewed = true;
             }
 
@@ -165,14 +170,6 @@ document.getElementById("video-preview").addEventListener("click", async () => {
                         viewTimeSaved = true;
                     } else {
                         await updateViewTime(video.dataset.releaseId, episodeId, currentTime);
-                    }
-                } else {
-                    if (!viewTimeDeleted) {
-                        await deleteViewTime(episodeId);
-                        viewTimeDeleted = true;
-                        if (video.dataset.nextEpisodeId != "") {
-                            await saveViewTime(video.dataset.nextEpisodeId, 0);
-                        }
                     }
                 }
             }
