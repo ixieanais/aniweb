@@ -209,7 +209,7 @@ class DataBase:
         total_episodes: Optional[int]
     ):
         await self.cursor.execute(
-            "UPDATE releases SET name = ?, english_name = ?, type = ?, year = ?, poster = ?, alias = ?, descriptions = ?, age_rating = ?, genres = ?, is_ongoing = ?, created_at = ?, updated_at = ?, fresh_at = ?, total_episodes = ? WHERE id = ?",
+            "UPDATE releases SET name = ?, english_name = ?, type = ?, year = ?, poster = ?, alias = ?, description = ?, age_rating = ?, genres = ?, is_ongoing = ?, created_at = ?, updated_at = ?, fresh_at = ?, total_episodes = ? WHERE id = ?",
             (name, english_name, type, year, poster, alias, description, age_rating, genres, is_ongoing, created_at, updated_at, fresh_at, total_episodes, id)
         )
         await self.database.commit()
