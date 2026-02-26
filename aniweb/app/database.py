@@ -190,6 +190,31 @@ class DataBase:
         await self.database.commit()
 
     @conn
+    async def update_release(
+        self,
+        id: str,
+        name: str,
+        english_name: Optional[str],
+        type: str,
+        year: int,
+        poster: str,
+        alias: str,
+        description: str,
+        age_rating: str,
+        genres: str,
+        is_ongoing: bool,
+        created_at: Optional[float],
+        updated_at: Optional[float],
+        fresh_at: float,
+        total_episodes: Optional[int]
+    ):
+        await self.cursor.execute(
+            "UPDATE releases SET name = ?, english_name = ?, type = ?, year = ?, poster = ?, alias = ?, descriptions = ?, age_rating = ?, genres = ?, is_ongoing = ?, created_at = ?, updated_at = ?, fresh_at = ?, total_episodes = ? WHERE id = ?",
+            (name, english_name, type, year, poster, alias, description, age_rating, genres, is_ongoing, created_at, updated_at, fresh_at, total_episodes, id)
+        )
+        await self.database.commit()
+
+    @conn
     async def get_latest_releases(self) -> list[Any]:
         self.cursor.row_factory = aiosqlite.Row
         cursor = await self.cursor.execute("SELECT * FROM releases ORDER BY fresh_at DESC LIMIT 10")
