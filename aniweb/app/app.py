@@ -25,7 +25,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, docs_url=None)
 app.mount("/static", StaticFiles(directory=config.STATIC_PATH), name="static")
 templates = Jinja2Templates(directory=config.TEMPLATES_PATH)
 
