@@ -30,10 +30,28 @@ class ReleaseService:
             else:
                 await self.database.update_expires_in(current_time + UPDATE_TIME, release_info["id"])
 
-            await self.fetch_and_store_release()
+            await self.fetch_and_store_release(release_info["id"])
 
-    async def fetch_and_store_release(self):
+    async def fetch_and_store_release(self, release_id: str):
         release_data = await Anilibria.get_release_info(self.alias)
+
+        await self.database.update_release(
+            id=release_id,
+            name=release_data["name"]["main"],
+            english_name=release_data["name"]["english"],
+            type=release_data["type"]["value"],
+            year=release_data["year"],
+            poster=f'https://anilibria.tv{release_data["poster"]["optimized"]["preview"]}',
+            alias=release_data["alias"],
+            description=release_data["description"],
+            age_rating=release_data["age_rating"]["label"],
+            genres=json.dumps([genre["name"] for genre in release_data["genres"]], ensure_ascii=False),
+            is_ongoing=release_data["is_ongoing"],
+            created_at=datetime.fromisoformat(release_data.get("created_at")).timestamp() if release_data.get("created_at") else None,
+            updated_at=datetime.fromisoformat(release_data.get("updated_at")).timestamp() if release_data.get("updated_at") else None,
+            fresh_at=datetime.fromisoformat(release_data.get("fresh_at")).timestamp() if release_data.get("fresh_at") else None,
+            total_episodes=len(release_data["episodes"]) if release_data.get("episodes") else None
+        )
 
         for episode in release_data["episodes"]:
             await self.database.insert_episode(
