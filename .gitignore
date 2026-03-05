@@ -211,4 +211,3 @@ data/
 
 Dockerfile
 *.yml
-.env.example
