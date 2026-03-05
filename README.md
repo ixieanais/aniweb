@@ -15,3 +15,5 @@ Aniweb is a web application for streaming anime with Russian voice acting.
 # Overview
 
 Aniweb is a web application for streaming anime with Russian voice acting from [AniLiberty](https://aniliberty.top/). The AniLiberty API is used to retrieve information about anime. The interface is made with love and specifically for those who used to watch anime on jut.su.
+
+**PostgresSQL REQUIRED**
