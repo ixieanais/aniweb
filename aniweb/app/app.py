@@ -19,7 +19,7 @@ from services import *
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global database
-    database = DataBase(config.DATABASE_PATH)
+    database = DataBase()
     await database.create_tables()
 
     yield
