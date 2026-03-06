@@ -58,8 +58,8 @@ class UsersOrm(Base):
     __tablename__ = "users"
 
     uid: Mapped[str] = mapped_column(String(36), primary_key=True)
-    username: Mapped[str | None] = mapped_column(String(24))
-    email: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
+    username: Mapped[str | None] = mapped_column(Text)
+    email: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
     password: Mapped[bytes] = mapped_column(nullable=False)
     connected_at: Mapped[int | None] = mapped_column(BigInteger)
     last_visit_at: Mapped[int | None] = mapped_column(BigInteger)
