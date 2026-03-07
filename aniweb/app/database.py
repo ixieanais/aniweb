@@ -228,7 +228,7 @@ class DataBase:
     @conn
     async def get_latest_releases(self) -> list[Any]:
         result = await self.session.execute(
-            text("SELECT * FROM releases ORDER BY fresh_at DESC LIMIT 10")
+            text("SELECT * FROM releases WHERE fresh_at IS NOT NULL ORDER BY fresh_at DESC LIMIT 10")
         )
         rows = result.all()
         return [dict(row._asdict()) for row in rows]
