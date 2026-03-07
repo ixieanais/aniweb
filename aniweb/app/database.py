@@ -207,7 +207,7 @@ class DataBase:
     @conn
     async def get_latest_releases(self) -> list[Any]:
         self.cursor.row_factory = aiosqlite.Row
-        cursor = await self.cursor.execute("SELECT * FROM releases ORDER BY fresh_at DESC LIMIT 10")
+        cursor = await self.cursor.execute("SELECT * FROM releases WHERE fresh_at IS NOT NULL ORDER BY fresh_at DESC LIMIT 10")
         rows = await cursor.fetchall()
         return [dict(row) for row in rows]
 
