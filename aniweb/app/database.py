@@ -81,7 +81,6 @@ class DataBase:
                 VALUES (:id, :name, :english_name, :type, :year, :source,
                         :poster, :alias, :description, :age_rating, :genres,
                         :is_ongoing, :created_at, :updated_at, :fresh_at, :total_episodes)
-                ON CONFLICT DO NOTHING
             """),
             {
                 "id": id,
