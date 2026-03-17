@@ -12,6 +12,8 @@ from models import *
 engine = create_async_engine(
     url=config.DATABASE_URL,
     echo=False,
+    pool_size=5,
+    future=True
 )
 
 if not database_exists(config.DATABASE_URL.replace("asyncpg", "psycopg")):
