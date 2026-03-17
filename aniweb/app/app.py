@@ -8,6 +8,7 @@ from fastapi.responses import HTMLResponse, Response, RedirectResponse
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.exc import IntegrityError
 from uuid import uuid4
 from contextlib import asynccontextmanager
 
@@ -187,9 +188,11 @@ async def add_favorites(request: Request, data: schemas.FavoriteRequest):
     try:
         await database.insert_favorite(request.cookies.get(config.SESSION_NAME), data.alias, datetime.now().timestamp())
         return {"status": "complete", "details": "starred"}
+    except IntegrityError:
+        raise HTTPException(status_code=401)
     except Exception as e:
         print(e)
-        return {"status": "incomplete"}
+        raise HTTPException(status_code=401)
 
 @app.delete("/favorite")
 async def delete_favorite(request: Request, data: schemas.FavoriteRequest):
