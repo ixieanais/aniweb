@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass
 from uuid import uuid4
 from datetime import datetime
-from aiosqlite import IntegrityError
+from sqlalchemy.exc import IntegrityError
 
 from database import DataBase
 from parsers import Anilibria
